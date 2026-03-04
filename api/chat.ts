@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import axios from 'axios';
 
+export const maxDuration = 60;
+
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse

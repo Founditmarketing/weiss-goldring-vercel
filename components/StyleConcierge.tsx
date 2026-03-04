@@ -18,6 +18,7 @@ const QUICK_ACTIONS = [
 ];
 
 // Live API consultation request via Vercel Serverless Functions
+// Live API consultation request via Vercel Serverless Functions
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
   try {
     const response = await fetch('/api/chat', {
@@ -28,25 +29,34 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
       body: JSON.stringify({ query: message, sessionKey: userKey }),
     });
 
-    const json = await response.json();
+    let json;
+    try {
+      json = await response.json();
+    } catch (e) {
+      console.error("Vercel returned non-JSON response (likely an error page or timeout):", e);
+      return "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?";
+    }
+
     console.log("VERCEL RESPONSE:", json);
 
     if (!response.ok) {
       console.error("Vercel returned an error:", json);
-      throw new Error(json.error || 'Vercel returned an error');
+      // Ensure we return a string even if the error object is missing a message
+      return typeof json.error === 'string' ? json.error : "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly.";
     }
 
     const aiText = json.text;
 
-    if (!aiText) {
-      console.warn("Ted Silver API: No text field found in response data.", json);
+    if (!aiText || typeof aiText !== 'string') {
+      console.warn("Ted Silver API: No valid text field found in response data.", json);
       return "I apologize, I'm having trouble retrieving my notes.";
     }
 
     return aiText;
   } catch (error) {
-    console.error("Chat UI Error:", error);
-    throw error;
+    console.error("Chat UI Fetch Error:", error);
+    // Always return a plain string to the caller to prevent React state crashes
+    return "I apologize, but I encountered an error while formulating my advice. Please try again.";
   }
 };
 
@@ -108,14 +118,15 @@ export const StyleConcierge: React.FC = () => {
 
     try {
       const response = await handleConsultationRequest(text, sessionKey);
-      const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: response };
+      // response is guaranteed to be a string based on the refactored handleConsultationRequest
+      const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: String(response) };
       setMessages(prev => [...prev, assistantMsg]);
     } catch (error) {
-      console.error("Ted Silver API Error:", error);
+      console.error("onSend Error:", error);
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly."
+        content: "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again?"
       };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
