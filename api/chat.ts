@@ -43,9 +43,13 @@ export default async function handler(
       }
     );
 
-    return response.status(200).json({
-      text: apiResponse.data.answer || "I apologize, but I couldn't formulate a response at this time."
-    });
+    const data = apiResponse.data;
+    console.log("RAW STAMMER RESPONSE:", JSON.stringify(data));
+
+    // Safely extract text from multiple possible Stammer API response structures
+    const extractedText = data?.data?.message || data?.data || data?.text || data?.message || JSON.stringify(data);
+
+    return response.status(200).json({ text: extractedText });
   } catch (error: any) {
     console.error("Stammer API Request Error:", error.response?.data || error.message);
     return response.status(500).json({

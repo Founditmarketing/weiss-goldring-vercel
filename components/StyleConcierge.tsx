@@ -20,7 +20,7 @@ const QUICK_ACTIONS = [
 // Live API consultation request via Vercel Serverless Functions
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
   try {
-    const response = await fetch('/api/consultation', {
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,24 +28,24 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
       body: JSON.stringify({ query: message, sessionKey: userKey }),
     });
 
+    const json = await response.json();
+    console.log("VERCEL RESPONSE:", json);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch consultation');
+      console.error("Vercel returned an error:", json);
+      throw new Error(json.error || 'Vercel returned an error');
     }
 
-    const result = await response.json();
-    console.log("Ted Silver API Raw Result:", result);
-
-    const aiText = result.text;
+    const aiText = json.text;
 
     if (!aiText) {
-      console.warn("Ted Silver API: No text field found in response data.", result);
+      console.warn("Ted Silver API: No text field found in response data.", json);
       return "I apologize, I'm having trouble retrieving my notes.";
     }
 
     return aiText;
   } catch (error) {
-    console.error("Ted Silver API Fetch Error:", error);
+    console.error("Chat UI Error:", error);
     throw error;
   }
 };
