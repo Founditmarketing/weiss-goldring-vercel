@@ -11,12 +11,6 @@ interface Message {
   content: string;
 }
 
-const QUICK_ACTIONS = [
-  "I need a suit for an upcoming event.",
-  "Looking for a gift (Baccarat/Accessories).",
-  "Inquire about Castangia or Bespoke Tailoring."
-];
-
 // Live API consultation request via Vercel Serverless Functions
 // Live API consultation request via Vercel Serverless Functions
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
@@ -221,7 +215,7 @@ export const StyleConcierge: React.FC = () => {
                   <div className="relative">
                     <div className="w-14 h-14 rounded-full overflow-hidden border border-gold-300/30 p-0.5">
                       <img
-                        src="/TedSilver.jpg"
+                        src="/tedsilveraibot.jpg"
                         alt="Ted Silver"
                         className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
                       />
@@ -229,7 +223,7 @@ export const StyleConcierge: React.FC = () => {
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#1C1C1E] animate-pulse" />
                   </div>
                   <div>
-                    <h2 className="font-playfair text-2xl text-[#D4AF37] leading-none tracking-tight">The Silver Standard</h2>
+                    <h2 className="font-serif text-2xl text-[#D4AF37] leading-none tracking-tight">The Silver Standard</h2>
                     <p className="font-quicksand text-[11px] text-white/40 uppercase tracking-[0.2em] mt-2 font-medium">Bespoke Digital Concierge</p>
                   </div>
                 </div>
@@ -256,10 +250,13 @@ export const StyleConcierge: React.FC = () => {
                     >
                       <div className={`max-w-[85%] ${msg.role === 'user'
                         ? 'bg-gradient-to-br from-gold-300 to-gold-500 text-navy-900 p-5 rounded-2xl rounded-tr-none shadow-xl shadow-gold-900/10 font-quicksand text-[14px] font-semibold'
-                        : 'bg-transparent text-white/90 font-playfair text-[18px] leading-relaxed italic'
+                        : 'bg-transparent text-white/90 font-serif text-[20px] leading-[1.2]'
                         }`}>
                         {msg.role === 'assistant' && (
-                          <div className="w-8 h-[1px] bg-gold-300/30 mb-4" />
+                          <>
+                            <p className="font-quicksand text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold not-italic">Ted Silver</p>
+                            <div className="w-8 h-[1px] bg-gold-300/30 mb-4" />
+                          </>
                         )}
                         {msg.content}
                       </div>
@@ -267,24 +264,6 @@ export const StyleConcierge: React.FC = () => {
                   ))}
                 </AnimatePresence>
 
-                {/* Quick Actions (Intro State) */}
-                {messages.length === 1 && (
-                  <div className="pt-4 space-y-3">
-                    {QUICK_ACTIONS.map((action, i) => (
-                      <motion.button
-                        key={action}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.8 + (i * 0.15), duration: 0.6 }}
-                        onClick={() => onSend(action)}
-                        className="w-full text-left p-4 rounded-xl border border-gold-300/10 hover:border-gold-300/40 hover:bg-gold-300/5 transition-all duration-300 flex items-center justify-between group"
-                      >
-                        <span className="font-quicksand text-[12px] text-white/60 tracking-wide group-hover:text-gold-300">{action}</span>
-                        <ChevronRight className="w-4 h-4 text-gold-300/30 group-hover:text-gold-300 group-hover:translate-x-1 transition-all" />
-                      </motion.button>
-                    ))}
-                  </div>
-                )}
 
                 {/* Thinking Animation (Horizontal Glowing Pulsing Line) */}
                 {isTyping && (
