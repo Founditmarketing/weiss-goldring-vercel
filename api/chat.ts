@@ -45,11 +45,11 @@ export default async function handler(
       }
     );
 
-    const data = apiResponse.data;
-    console.log("RAW STAMMER RESPONSE:", JSON.stringify(data));
+    const stammerResponse = apiResponse.data;
+    console.log("RAW STAMMER RESPONSE:", JSON.stringify(stammerResponse));
 
-    // Safely extract text from multiple possible Stammer API response structures
-    const extractedText = data?.data?.message || data?.data || data?.text || data?.message || JSON.stringify(data);
+    // Safely extract the 'answer' field based on Stammer's specific JSON structure
+    const extractedText = stammerResponse?.data?.answer || "I apologize, I could not process that response.";
 
     return response.status(200).json({ text: extractedText });
   } catch (error: any) {
