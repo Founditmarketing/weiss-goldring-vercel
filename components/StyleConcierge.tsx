@@ -180,18 +180,19 @@ export const StyleConcierge: React.FC = () => {
                 <div className={`absolute inset-2 rounded-full border border-gold-300/20 backdrop-blur-xl group-hover:border-gold-300/40 transition-all duration-700 shadow-[0_12px_40px_rgba(0,0,0,0.3)] ${isScrolled ? 'bg-black/95' : 'bg-black/45'}`} />
 
                 {/* Split Semi-Circle Heritage Orbit */}
-                <svg className="absolute inset-0 w-full h-full p-1 fill-none overflow-visible">
+                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full fill-none overflow-visible">
                   <motion.circle
-                    cx="50%"
-                    cy="50%"
-                    r="48%"
+                    cx="50"
+                    cy="50"
+                    r="47"
                     stroke="#D4AF37"
-                    strokeWidth="1"
+                    strokeWidth="2"
                     strokeOpacity="0.5"
                     pathLength="100"
                     strokeDasharray="42 8"
                     animate={{ rotate: 360 }}
                     transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
+                    style={{ transformOrigin: "50px 50px" }}
                   />
                 </svg>
 
