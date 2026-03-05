@@ -12,7 +12,6 @@ interface Message {
 }
 
 // Live API consultation request via Vercel Serverless Functions
-// Live API consultation request via Vercel Serverless Functions
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
   try {
     const response = await fetch('/api/chat', {
@@ -35,7 +34,6 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
 
     if (!response.ok) {
       console.error("Vercel returned an error:", json);
-      // Ensure we return a string even if the error object is missing a message
       return typeof json.error === 'string' ? json.error : "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly.";
     }
 
@@ -49,20 +47,49 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
     return aiText;
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
-    // Always return a plain string to the caller to prevent React state crashes
     return "I apologize, but I encountered an error while formulating my advice. Please try again.";
   }
 };
 
 export const StyleConcierge: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '1', role: 'assistant', content: "Greetings. I am Ted Silver. It would be my distinct pleasure to offer you a personal style consultation. How may I assist your sartorial needs today?" }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sessionKey, setSessionKey] = useState('');
+  const [showInitialTooltip, setShowInitialTooltip] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll position for bell background dynamics
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Show initial tooltip for 3 seconds on mount
+  useEffect(() => {
+    setShowInitialTooltip(true);
+    const timer = setTimeout(() => setShowInitialTooltip(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Sequence initial greeting
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      const timer = setTimeout(() => {
+        setMessages([{
+          id: '1',
+          role: 'assistant',
+          content: "Greetings. I am Ted Silver. It would be my distinct pleasure to offer you a personal style consultation. How may I assist your sartorial needs today?"
+        }]);
+      }, 1500); // Wait for input bar to finish (1.5s)
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, messages.length]);
 
   // Generate session key on mount
   useEffect(() => {
@@ -83,7 +110,6 @@ export const StyleConcierge: React.FC = () => {
     const distanceX = e.clientX - centerX;
     const distanceY = e.clientY - centerY;
 
-    // Magnetic pull strength
     const strength = 0.35;
     x.set(distanceX * strength);
     y.set(distanceY * strength);
@@ -94,27 +120,18 @@ export const StyleConcierge: React.FC = () => {
     y.set(0);
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    if (isOpen) scrollToBottom();
-  }, [messages, isTyping, isOpen]);
-
   const onSend = async (text: string) => {
     if (!text.trim()) return;
 
     const userMsg: Message = { id: Date.now().toString(), role: 'user', content: text };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages(prev => [userMsg, ...prev]);
     setInput('');
     setIsTyping(true);
 
     try {
       const response = await handleConsultationRequest(text, sessionKey);
-      // response is guaranteed to be a string based on the refactored handleConsultationRequest
       const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: String(response) };
-      setMessages(prev => [...prev, assistantMsg]);
+      setMessages(prev => [assistantMsg, ...prev]);
     } catch (error) {
       console.error("onSend Error:", error);
       const errorMsg: Message = {
@@ -122,22 +139,27 @@ export const StyleConcierge: React.FC = () => {
         role: 'assistant',
         content: "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again?"
       };
-      setMessages(prev => [...prev, errorMsg]);
+      setMessages(prev => [errorMsg, ...prev]);
     } finally {
       setIsTyping(false);
     }
   };
 
   const toggleOpen = () => {
+    // Play subtle bell sound
+    const audio = new Audio('/freesound_community-bell-98033.mp3');
+    audio.volume = 0.1;
+    audio.play().catch(e => console.error("Audio play blocked or failed:", e));
+
     setIsOpen(!isOpen);
   };
 
   return (
     <>
-      {/* Trigger Button (Magnetic) */}
+      {/* Trigger Button (Heritage Edition - Est. 1899) */}
       <AnimatePresence>
         {!isOpen && (
-          <div className="fixed bottom-10 right-10 z-50">
+          <div className="fixed sm:bottom-10 sm:right-10 bottom-6 right-6 z-[100]">
             <motion.div
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
@@ -149,175 +171,218 @@ export const StyleConcierge: React.FC = () => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
                 onClick={toggleOpen}
-                className="w-20 h-20 bg-[#1C1C1E] border border-white/10 rounded-full flex items-center justify-center shadow-2xl relative overflow-hidden group"
+                className="sm:w-24 sm:h-24 w-20 h-20 flex items-center justify-center relative group"
               >
-                {/* Subtle Glow Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-gold-300/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Subtle Heritage Glow */}
+                <div className="absolute inset-4 rounded-full bg-gold-300/5 blur-2xl group-hover:bg-gold-300/10 transition-colors duration-1000" />
 
-                {/* Concierge Bell */}
-                <div className="flex flex-col items-center justify-center">
-                  <Bell className="w-8 h-8 text-[#D4AF37] group-hover:scale-110 transition-transform duration-500" />
-                </div>
+                {/* Heritage Heritage Frame (Solid black on scroll) */}
+                <div className={`absolute inset-2 rounded-full border border-gold-300/20 backdrop-blur-xl group-hover:border-gold-300/40 transition-all duration-700 shadow-[0_12px_40px_rgba(0,0,0,0.3)] ${isScrolled ? 'bg-black/95' : 'bg-black/45'}`} />
 
-                {/* Animated Inner Border */}
-                <svg className="absolute inset-0 w-full h-full p-1 fill-none">
+                {/* Split Semi-Circle Heritage Orbit */}
+                <svg className="absolute inset-0 w-full h-full p-1 fill-none overflow-visible">
                   <motion.circle
                     cx="50%"
                     cy="50%"
                     r="48%"
                     stroke="#D4AF37"
                     strokeWidth="1"
-                    strokeDasharray="10 100"
+                    strokeOpacity="0.5"
+                    pathLength="100"
+                    strokeDasharray="42 8"
                     animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                    transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
                   />
                 </svg>
+
+                {/* Centered Heritage Bell */}
+                <div className="relative z-10">
+                  <Bell className="sm:w-8 sm:h-8 w-7 h-7 text-[#D4AF37] opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                </div>
+
+                {/* Reflective Inner Bezel */}
+                <div className="absolute inset-3 rounded-full border border-white/5 pointer-events-none" />
               </motion.button>
 
-              {/* Tooltip */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileHover={{ opacity: 1, x: -10 }}
-                className="absolute right-[110%] top-1/2 -translate-y-1/2 whitespace-nowrap bg-black/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-lg pointer-events-none"
-              >
-                <span className="font-quicksand text-xs tracking-widest uppercase text-white">Request a Consultation</span>
-              </motion.div>
+              {/* Temporary Load Greeting & Hover Tooltip */}
+              <AnimatePresence mode="wait">
+                {showInitialTooltip ? (
+                  <motion.div
+                    key="load-greeting"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: -12 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute right-full top-1/2 -translate-y-1/2 -mt-6 whitespace-nowrap px-8 py-4 border-r border-gold-300/40 pointer-events-none mr-2"
+                  >
+                    <div className="flex flex-col items-end justify-center h-full">
+                      <span className="font-serif italic text-xl text-white leading-none">Personal Style Consultation</span>
+                      <p className="font-sans text-[10px] tracking-[0.5em] uppercase text-gold-300/60 mt-2 font-medium">Direct to Ted Silver</p>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="standard-tooltip"
+                    initial={{ opacity: 0, x: 10 }}
+                    whileHover={{ opacity: 1, x: -12 }}
+                    className="absolute right-full top-1/2 -translate-y-1/2 -mt-6 whitespace-nowrap px-8 py-4 border-r border-gold-300/40 pointer-events-none mr-2"
+                  >
+                    <div className="flex flex-col items-end justify-center h-full">
+                      <span className="font-serif italic text-xl text-white leading-none">The Silver Standard</span>
+                      <p className="font-sans text-[10px] tracking-[0.5em] uppercase text-gold-300/60 mt-2 font-medium">Established 1899</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Main Interface (Sidebar Drawer) */}
+      {/* Main Cinematic Interface */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* Background Blur Overlay */}
+          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end overflow-hidden">
+            {/* Immersive Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[55]"
+              className="absolute inset-0 bg-black/60 backdrop-blur-xl z-0"
             />
 
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ ease: [0.32, 0.72, 0, 1], duration: 0.6 }}
-              className="fixed top-0 right-0 h-screen w-full sm:w-[450px] bg-gradient-to-b from-[#1C1C1E] to-[#0F172A] z-[60] shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col border-l border-white/5"
+            {/* Elegant Close Button */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              onClick={() => setIsOpen(false)}
+              className="absolute top-8 right-8 z-50 flex flex-col items-center gap-1 group"
             >
-              {/* Header */}
-              <div className="p-8 border-b border-white/5 bg-black/20 backdrop-blur-xl flex justify-between items-center relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-[100px] -mr-32 -mt-32" />
-
-                <div className="flex items-center gap-5 relative z-10">
-                  <div className="relative">
-                    <div className="w-14 h-14 rounded-full overflow-hidden border border-gold-300/30 p-0.5">
-                      <img
-                        src="/tedsilveraibot.jpg"
-                        alt="Ted Silver"
-                        className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700"
-                      />
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#1C1C1E] animate-pulse" />
-                  </div>
-                  <div>
-                    <h2 className="font-serif text-2xl text-[#D4AF37] leading-none tracking-tight">The Silver Standard</h2>
-                    <p className="font-quicksand text-[11px] text-white/40 uppercase tracking-[0.2em] mt-2 font-medium">Bespoke Digital Concierge</p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="group relative z-10 flex items-center gap-2 hover:text-gold-300 transition-colors"
-                >
-                  <span className="font-quicksand text-[10px] uppercase tracking-widest text-white/40 group-hover:text-gold-300">Close</span>
-                  <X className="w-5 h-5 text-white/40 group-hover:text-gold-300" />
-                </button>
+              <div className="p-3 rounded-full border border-white/10 group-hover:bg-white/5 transition-colors">
+                <X className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
               </div>
+              <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-white/30 group-hover:text-white transition-colors">Close</span>
+            </motion.button>
 
-              {/* Chat Canvas */}
-              <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide bg-[url('https://www.transparenttextures.com/patterns/dark-leather.png')] bg-fixed">
-                <AnimatePresence mode="popLayout">
-                  {messages.map((msg, idx) => (
-                    <motion.div
-                      key={msg.id}
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.1 }}
-                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div className={`max-w-[85%] ${msg.role === 'user'
-                        ? 'bg-gradient-to-br from-gold-300 to-gold-500 text-navy-900 p-5 rounded-2xl rounded-tr-none shadow-xl shadow-gold-900/10 font-quicksand text-[14px] font-semibold'
-                        : 'bg-transparent text-white/90 font-serif text-[20px] leading-[1.2]'
-                        }`}>
-                        {msg.role === 'assistant' && (
-                          <>
-                            <p className="font-quicksand text-[10px] uppercase tracking-widest text-[#D4AF37] mb-2 font-bold not-italic">Ted Silver</p>
-                            <div className="w-8 h-[1px] bg-gold-300/30 mb-4" />
-                          </>
-                        )}
-                        {msg.content}
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-
-
-                {/* Thinking Animation (Horizontal Glowing Pulsing Line) */}
-                {isTyping && (
+            {/* Message Area (Flows Upwards) */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.1 } }}
+              className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col-reverse scrollbar-hide py-12"
+              style={{
+                maskImage: 'linear-gradient(to bottom, transparent, black 25%, black 90%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 25%, black 90%, transparent)'
+              }}
+            >
+              <AnimatePresence initial={false} mode="popLayout">
+                {messages.map((msg, idx) => (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col items-start gap-3"
+                    key={msg.id}
+                    layout
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.8,
+                        ease: [0.16, 1, 0.3, 1]
+                      }
+                    }}
+                    exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                    className={`flex mb-8 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <span className="font-quicksand text-[9px] uppercase tracking-[0.3em] text-white/20">Ted is formulating advice</span>
-                    <div className="w-32 h-[1px] bg-white/5 relative overflow-hidden">
-                      <motion.div
-                        animate={{
-                          x: ['-100%', '100%'],
-                          opacity: [0, 1, 0]
-                        }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                        className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-gold-300 to-transparent shadow-[0_0_10px_#D4AF37]"
-                      />
+                    <div className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
+                      {msg.role === 'assistant' && (
+                        <div className="mt-1 flex-shrink-0">
+                          <div className="w-10 h-10 rounded-full border border-gold-300/30 overflow-hidden bg-black/40">
+                            <img src="/tedsilveraibot.jpg" alt="Ted Silver" className="w-full h-full object-cover grayscale" />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex flex-col">
+                        <div className={`
+                          ${msg.role === 'assistant'
+                            ? 'font-serif text-lg sm:text-2xl text-white/90 leading-snug italic'
+                            : 'font-sans text-[11px] tracking-[0.2em] uppercase text-gold-300/60 border-r border-gold-300/20 pr-4'
+                          }
+                        `}>
+                          {msg.content}
+                        </div>
+                        {msg.role === 'assistant' && (
+                          <div className="mt-3 w-12 h-[1px] bg-gold-300/30" />
+                        )}
+                      </div>
                     </div>
                   </motion.div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
+                ))}
+              </AnimatePresence>
 
-              {/* Input Area */}
-              <div className="p-8 bg-black/40 border-t border-white/5 backdrop-blur-3xl">
-                <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-gold-300/20 to-transparent rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition duration-1000" />
-                  <div className="relative bg-[#1C1C1E] border border-white/10 rounded-xl flex items-center transition-all duration-300 focus-within:border-gold-300/50">
-                    <input
-                      type="text"
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
-                      placeholder="Share your style inquiries..."
-                      className="flex-1 bg-transparent px-6 py-5 text-white/80 placeholder:text-white/20 text-sm focus:outline-none font-quicksand tracking-wide"
+              {/* Thinking State */}
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-4 mb-4"
+                >
+                  <div className="w-10 flex-shrink-0 flex justify-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 1, 0.3] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="w-2 h-2 rounded-full bg-gold-300 shadow-[0_0_10px_rgba(212,175,55,0.8)]"
                     />
-                    <button
-                      onClick={() => onSend(input)}
-                      disabled={!input.trim() || isTyping}
-                      className="pr-6 text-gold-300 hover:text-white transition-all disabled:opacity-20 group"
-                    >
-                      <div className="p-3 bg-white/5 rounded-full group-hover:bg-gold-500 group-hover:text-[#1C1C1E] transition-all duration-500">
-                        <Send className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                      </div>
-                    </button>
                   </div>
-                </div>
-                <div className="flex justify-center mt-6">
-                  <p className="font-quicksand text-[10px] text-white/10 uppercase tracking-[0.4em]">Est. 1899 • Alexandria, Louisiana</p>
+                  <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white/20">Ted is formulating advice</span>
+                </motion.div>
+              )}
+            </motion.div>
+
+            {/* Input Console (Bottom Center) */}
+            <motion.div
+              initial={{ x: 1000, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 1000, opacity: 0 }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute bottom-12 z-20 w-full max-w-3xl px-6"
+            >
+              <div className="relative group">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/30 via-white/5 to-gold-300/30 rounded-full blur-sm opacity-50 group-focus-within:opacity-100 transition-opacity duration-1000" />
+                <div className="relative bg-black/60 backdrop-blur-2xl border border-white/10 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
+                    placeholder="Share your style inquiries..."
+                    className="flex-1 bg-transparent py-4 text-white/90 placeholder:text-white/30 text-base focus:outline-none font-sans tracking-wide"
+                  />
+                  <button
+                    onClick={() => onSend(input)}
+                    disabled={!input.trim() || isTyping}
+                    className="group"
+                  >
+                    <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
+                      <Send className="w-5 h-5 text-gold-300 group-hover:text-black transition-colors" />
+                    </div>
+                  </button>
                 </div>
               </div>
             </motion.div>
-          </>
+
+            {/* Subtle Brand Watermark */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="absolute bottom-4 left-1/2 -translate-x-1/2"
+            >
+              <p className="font-sans text-[10px] text-white/5 uppercase tracking-[0.5em] whitespace-nowrap">Est. 1899 • Cinematic Concierge Experience</p>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>
