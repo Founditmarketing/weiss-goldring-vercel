@@ -313,7 +313,7 @@ export const StyleConcierge: React.FC = () => {
                       <div className="flex flex-col">
                         <div className={`
                           ${msg.role === 'assistant'
-                            ? 'font-serif font-light text-[17px] sm:text-[22px] text-white/90 leading-snug italic'
+                            ? 'font-serif font-normal sm:font-light text-[19.5px] sm:text-[22px] text-white/90 leading-snug italic'
                             : 'font-sans text-[11px] tracking-[0.2em] uppercase text-gold-300/60 border-r border-gold-300/20 pr-4'
                           }
                         `}>
