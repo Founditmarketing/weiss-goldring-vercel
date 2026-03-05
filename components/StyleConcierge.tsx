@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import Bell from 'lucide-react/dist/esm/icons/bell';
 import Send from 'lucide-react/dist/esm/icons/send';
 import X from 'lucide-react/dist/esm/icons/x';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
@@ -199,11 +198,14 @@ export const StyleConcierge: React.FC = () => {
                   </svg>
                 </motion.div>
 
-                {/* Centered Heritage Bell */}
-                <div className="relative z-10">
-                  <Bell className="sm:w-8 sm:h-8 w-7 h-7 text-[#D4AF37] opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                {/* Centered Heritage Bell Icon */}
+                <div className="relative z-10 flex items-center justify-center">
+                  <img
+                    src="/concierge bell icon.png"
+                    alt="Concierge"
+                    className="sm:w-10 sm:h-10 w-9 h-9 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
+                  />
                 </div>
-
                 {/* Reflective Inner Bezel */}
                 <div className="absolute inset-3 rounded-full border border-white/5 pointer-events-none" />
               </motion.button>
