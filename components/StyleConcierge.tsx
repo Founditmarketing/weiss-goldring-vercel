@@ -178,6 +178,18 @@ export const StyleConcierge: React.FC = () => {
                 <div className="absolute inset-4 rounded-full bg-gold-300/5 blur-2xl group-hover:bg-gold-300/10 transition-colors duration-1000" />
 
 
+                {/* Heritage Background (Appears on scroll) */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    backgroundColor: isScrolled ? '#050E17' : 'rgba(0,0,0,0)',
+                    borderColor: isScrolled ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0)',
+                    scale: isScrolled ? 1 : 0.8,
+                    opacity: isScrolled ? 1 : 0
+                  }}
+                  className="absolute inset-2 rounded-full border shadow-2xl transition-all duration-700"
+                />
+
                 {/* Split Semi-Circle Heritage Orbit (Failsafe External Rotation) */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
@@ -190,9 +202,9 @@ export const StyleConcierge: React.FC = () => {
                       cy="50"
                       r="47"
                       stroke="#D4AF37"
-                      strokeWidth="1.5"
+                      strokeWidth="1"
                       strokeOpacity="0.5"
-                      strokeDasharray="102 45.6"
+                      strokeDasharray="90 57.6"
                     />
                   </svg>
                 </motion.div>
