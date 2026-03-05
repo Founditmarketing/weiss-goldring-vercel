@@ -192,7 +192,7 @@ export const StyleConcierge: React.FC = () => {
                       stroke="#D4AF37"
                       strokeWidth="1.5"
                       strokeOpacity="0.5"
-                      strokeDasharray="115 32.6"
+                      strokeDasharray="102 45.6"
                     />
                   </svg>
                 </motion.div>
@@ -247,6 +247,8 @@ export const StyleConcierge: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end overflow-hidden">
+            {/* Heritage Heritage Frame (Appears as solid dark blue on scroll) */}
+            <div className={`absolute inset-2 rounded-full border border-gold-300/20 backdrop-blur-xl transition-all duration-700 shadow-[0_12px_40px_rgba(0,0,0,0.3)] ${isScrolled ? 'bg-[#0A1128] opacity-100' : 'bg-transparent opacity-0'}`} />
             {/* Immersive Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
