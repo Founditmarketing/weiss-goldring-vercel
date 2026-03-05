@@ -203,7 +203,7 @@ export const StyleConcierge: React.FC = () => {
                   <img
                     src="/concierge bell icon.png"
                     alt="Concierge"
-                    className="sm:w-10 sm:h-10 w-9 h-9 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
+                    className="sm:w-14 sm:h-14 w-12 h-12 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
                   />
                 </div>
                 {/* Reflective Inner Bezel */}
