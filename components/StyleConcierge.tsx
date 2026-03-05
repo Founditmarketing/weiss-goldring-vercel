@@ -149,7 +149,7 @@ export const StyleConcierge: React.FC = () => {
   const toggleOpen = () => {
     // Play subtle bell sound
     const audio = new Audio('/freesound_community-bell-98033.mp3');
-    audio.volume = 0.05;
+    audio.volume = 0.02;
     audio.play().catch(e => console.error("Audio play blocked or failed:", e));
 
     setIsOpen(!isOpen);
