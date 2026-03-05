@@ -208,7 +208,7 @@ export const StyleConcierge: React.FC = () => {
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
+                  transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
                 >
                   <svg viewBox="0 0 100 100" className="w-full h-full fill-none overflow-visible">
                     <circle
@@ -218,7 +218,7 @@ export const StyleConcierge: React.FC = () => {
                       stroke="#D4AF37"
                       strokeWidth="1"
                       strokeOpacity="0.5"
-                      strokeDasharray="90 57.6"
+                      strokeDasharray="60 87.6"
                     />
                   </svg>
                 </motion.div>
@@ -228,7 +228,7 @@ export const StyleConcierge: React.FC = () => {
                   <img
                     src="/concierge bell icon-2.png"
                     alt="Concierge"
-                    className="sm:w-16 sm:h-16 w-13 h-13 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
+                    className="sm:w-16 sm:h-16 w-11 h-11 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
                   />
                 </div>
 
