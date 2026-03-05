@@ -59,7 +59,8 @@ export const StyleConcierge: React.FC = () => {
   const [sessionKey, setSessionKey] = useState('');
   const [showInitialTooltip, setShowInitialTooltip] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const latestMessageRef = useRef<HTMLDivElement>(null);
 
   // Track scroll position for bell background dynamics
   useEffect(() => {
@@ -269,19 +270,21 @@ export const StyleConcierge: React.FC = () => {
               <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-white/30 group-hover:text-white transition-colors">Close</span>
             </motion.button>
 
-            {/* Message Area (Flows Upwards) */}
+            {/* Message Area (Refactored for Top-Aligned Scroll) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
-              className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col-reverse scrollbar-hide py-12"
+              ref={scrollContainerRef}
+              className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col scrollbar-hide py-12"
               style={{
-                maskImage: 'linear-gradient(to bottom, transparent, black 25%, black 90%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 25%, black 90%, transparent)'
+                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)'
               }}
             >
+              <div className="mt-auto" />
               <AnimatePresence initial={false} mode="popLayout">
-                {messages.map((msg, idx) => (
+                {[...messages].reverse().map((msg, idx) => (
                   <motion.div
                     key={msg.id}
                     layout
@@ -296,6 +299,7 @@ export const StyleConcierge: React.FC = () => {
                     }}
                     exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
                     className={`flex mb-8 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    ref={idx === messages.length - 1 ? latestMessageRef : null}
                   >
                     <div className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
                       {msg.role === 'assistant' && (
