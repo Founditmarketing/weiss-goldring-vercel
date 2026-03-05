@@ -177,8 +177,6 @@ export const StyleConcierge: React.FC = () => {
                 {/* Subtle Heritage Glow */}
                 <div className="absolute inset-4 rounded-full bg-gold-300/5 blur-2xl group-hover:bg-gold-300/10 transition-colors duration-1000" />
 
-                {/* Heritage Heritage Frame (Solid black on scroll) */}
-                <div className={`absolute inset-2 rounded-full border border-gold-300/20 backdrop-blur-xl group-hover:border-gold-300/40 transition-all duration-700 shadow-[0_12px_40px_rgba(0,0,0,0.3)] ${isScrolled ? 'bg-black/95' : 'bg-black/45'}`} />
 
                 {/* Split Semi-Circle Heritage Orbit (Failsafe External Rotation) */}
                 <motion.div
@@ -192,9 +190,9 @@ export const StyleConcierge: React.FC = () => {
                       cy="50"
                       r="47"
                       stroke="#D4AF37"
-                      strokeWidth="2"
+                      strokeWidth="1.5"
                       strokeOpacity="0.5"
-                      strokeDasharray="130 17.5"
+                      strokeDasharray="115 32.6"
                     />
                   </svg>
                 </motion.div>
@@ -204,11 +202,10 @@ export const StyleConcierge: React.FC = () => {
                   <img
                     src="/concierge bell icon-2.png"
                     alt="Concierge"
-                    className="sm:w-14 sm:h-14 w-12 h-12 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
+                    className="sm:w-16 sm:h-16 w-13 h-13 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
                   />
                 </div>
-                {/* Reflective Inner Bezel */}
-                <div className="absolute inset-3 rounded-full border border-white/5 pointer-events-none" />
+
               </motion.button>
 
               {/* Temporary Load Greeting & Hover Tooltip */}
