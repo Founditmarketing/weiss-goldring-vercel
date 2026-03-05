@@ -202,7 +202,7 @@ export const StyleConcierge: React.FC = () => {
                 {/* Centered Heritage Bell Icon */}
                 <div className="relative z-10 flex items-center justify-center">
                   <img
-                    src="/concierge bell icon.png"
+                    src="/concierge bell icon-2.png"
                     alt="Concierge"
                     className="sm:w-14 sm:h-14 w-12 h-12 object-contain opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 brightness-110"
                   />
