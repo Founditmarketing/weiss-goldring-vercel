@@ -353,15 +353,15 @@ export const StyleConcierge: React.FC = () => {
               className="absolute bottom-12 z-20 w-full max-w-3xl px-6"
             >
               <div className="relative group">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/30 via-white/5 to-gold-300/30 rounded-full blur-sm opacity-50 group-focus-within:opacity-100 transition-opacity duration-1000" />
-                <div className="relative bg-black/60 backdrop-blur-2xl border border-white/10 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/30 via-white/5 to-gold-300/30 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
+                <div className="relative bg-black/80 backdrop-blur-2xl border border-white/25 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
                     placeholder="Share your style inquiries..."
-                    className="flex-1 bg-transparent py-4 text-white/90 placeholder:text-white/30 text-base focus:outline-none font-sans tracking-wide"
+                    className="flex-1 bg-transparent py-4 text-white/90 placeholder:text-white/50 text-base focus:outline-none font-sans tracking-wide"
                   />
                   <button
                     onClick={() => onSend(input)}
