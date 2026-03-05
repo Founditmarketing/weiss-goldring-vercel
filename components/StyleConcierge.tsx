@@ -60,6 +60,7 @@ export const StyleConcierge: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const latestMessageRef = useRef<HTMLDivElement>(null);
+  const hasPlayedSoundRef = useRef(false);
 
   // Track scroll position for bell background dynamics
   useEffect(() => {
@@ -160,11 +161,14 @@ export const StyleConcierge: React.FC = () => {
   };
 
   const toggleOpen = () => {
-    // Play subtle bell sound
-    const audio = new Audio('/freesound_community-bell-98033.mp3');
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-    audio.volume = isMobile ? 0.01 : 0.02;
-    audio.play().catch(e => console.error("Audio play blocked or failed:", e));
+    // Play subtle bell sound only on first interaction
+    if (!hasPlayedSoundRef.current) {
+      const audio = new Audio('/freesound_community-bell-98033.mp3');
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+      audio.volume = isMobile ? 0.01 : 0.02;
+      audio.play().catch(e => console.error("Audio play blocked or failed:", e));
+      hasPlayedSoundRef.current = true;
+    }
 
     setIsOpen(!isOpen);
   };
