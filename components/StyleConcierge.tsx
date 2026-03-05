@@ -97,6 +97,20 @@ export const StyleConcierge: React.FC = () => {
     setSessionKey(randomKey);
   }, []);
 
+  // Auto-scroll to latest message
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Small delay to allow Framer Motion animations to start/calculate
+      const timer = setTimeout(() => {
+        latestMessageRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, isOpen]);
+
   // Magnetic Button Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
