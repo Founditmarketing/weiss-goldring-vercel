@@ -179,22 +179,24 @@ export const StyleConcierge: React.FC = () => {
                 {/* Heritage Heritage Frame (Solid black on scroll) */}
                 <div className={`absolute inset-2 rounded-full border border-gold-300/20 backdrop-blur-xl group-hover:border-gold-300/40 transition-all duration-700 shadow-[0_12px_40px_rgba(0,0,0,0.3)] ${isScrolled ? 'bg-black/95' : 'bg-black/45'}`} />
 
-                {/* Split Semi-Circle Heritage Orbit */}
-                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full fill-none overflow-visible">
-                  <motion.circle
-                    cx="50"
-                    cy="50"
-                    r="47"
-                    stroke="#D4AF37"
-                    strokeWidth="2"
-                    strokeOpacity="0.5"
-                    pathLength="100"
-                    strokeDasharray="42 8"
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-                    style={{ transformOrigin: "50px 50px" }}
-                  />
-                </svg>
+                {/* Split Semi-Circle Heritage Orbit (Failsafe External Rotation) */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
+                >
+                  <svg viewBox="0 0 100 100" className="w-full h-full fill-none overflow-visible">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="47"
+                      stroke="#D4AF37"
+                      strokeWidth="2"
+                      strokeOpacity="0.5"
+                      strokeDasharray="130 17.5"
+                    />
+                  </svg>
+                </motion.div>
 
                 {/* Centered Heritage Bell */}
                 <div className="relative z-10">
