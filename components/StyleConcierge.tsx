@@ -334,8 +334,8 @@ export const StyleConcierge: React.FC = () => {
               ref={scrollContainerRef}
               className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col scrollbar-hide py-12"
               style={{
-                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)'
+                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 94%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 94%, transparent)'
               }}
             >
               <div className="mt-auto" />
@@ -410,7 +410,7 @@ export const StyleConcierge: React.FC = () => {
                   <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white/20">Ted is formulating advice</span>
                 </motion.div>
               )}
-              <div ref={messagesEndRef} className="h-24 w-full shrink-0" />
+              <div ref={messagesEndRef} className="h-8 w-full shrink-0" />
             </motion.div>
 
             {/* Input Console (Bottom Center) */}
