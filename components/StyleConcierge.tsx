@@ -359,7 +359,14 @@ export const StyleConcierge: React.FC = () => {
                           }
                           whitespace-pre-line
                         `}>
-                          {msg.content}
+                          {msg.role === 'assistant'
+                            ? msg.content.split('\n\n').filter(p => p.trim()).map((para, i, arr) => (
+                              <div key={i} className={i !== arr.length - 1 ? 'mb-3' : ''}>
+                                {para.trim()}
+                              </div>
+                            ))
+                            : msg.content
+                          }
                         </div>
                         {msg.role === 'assistant' && (
                           <div className="mt-3 w-12 h-[1px] bg-gold-300/30" />
