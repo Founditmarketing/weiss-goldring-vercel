@@ -194,7 +194,11 @@ export const StyleConcierge: React.FC = () => {
           <div className="fixed sm:bottom-10 sm:right-10 bottom-6 right-6 z-[100]">
             <motion.div
               onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={(e) => {
+                handleMouseLeave(e);
+                setIsHovered(false);
+              }}
+              onMouseEnter={() => setIsHovered(true)}
               style={{ x: mouseX, y: mouseY }}
               className="relative group"
             >
@@ -228,14 +232,18 @@ export const StyleConcierge: React.FC = () => {
                   transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
                 >
                   <svg viewBox="0 0 100 100" className="w-full h-full fill-none overflow-visible">
-                    <circle
+                    <motion.circle
                       cx="50"
                       cy="50"
                       r="47"
                       stroke="#D4AF37"
                       strokeWidth="1"
                       strokeOpacity="0.5"
-                      strokeDasharray="60 87.6"
+                      initial={false}
+                      animate={{
+                        strokeDasharray: isHovered ? "300 0" : "60 87.6"
+                      }}
+                      transition={{ duration: 0.8, ease: "easeInOut" }}
                     />
                   </svg>
                 </motion.div>
