@@ -10,10 +10,10 @@ interface Message {
   content: string;
 }
 
-// Live API consultation request via Vercel Serverless Functions
+// Live API consultation request via Vercel Serverless Functions (Voiceflow)
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
   try {
-    const response = await fetch('/api/chat', {
+    const response = await fetch('/api/voiceflow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -25,25 +25,32 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
     try {
       json = await response.json();
     } catch (e) {
-      console.error("API Call Failed. This usually happens if the local dev server (Vite) is not configured to handle /api routes or the environment variable is missing.", e);
+      console.error("API Call Failed.", e);
       return "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?";
     }
 
-    console.log("VERCEL RESPONSE:", json);
+    console.log("VOICEFLOW TRACES:", json);
 
     if (!response.ok) {
       console.error("Vercel returned an error:", json);
       return typeof json.error === 'string' ? json.error : "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly.";
     }
 
-    const aiText = json.text;
-
-    if (!aiText || typeof aiText !== 'string') {
-      console.warn("Ted Silver API: No valid text field found in response data.", json);
+    const traces = json.traces;
+    if (!Array.isArray(traces)) {
+      console.warn("Voiceflow returned invalid trace array:", json);
       return "I apologize, I'm having trouble retrieving my notes.";
     }
 
-    return aiText;
+    // Parse the traces to find text responses
+    let assistantText = "";
+    for (const trace of traces) {
+      if (trace.type === 'text' && trace.payload && trace.payload.message) {
+        assistantText += trace.payload.message + "\n\n";
+      }
+    }
+
+    return assistantText.trim() || "I apologize, I didn't quite catch that.";
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return "I apologize, but I encountered an error while formulating my advice. Please try again.";
@@ -302,15 +309,11 @@ export const StyleConcierge: React.FC = () => {
       {/* Main Cinematic Interface */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end overflow-hidden">
-            {/* Immersive Background Overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-xl z-0"
-            />
+          <div className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] w-[calc(100vw-32px)] sm:w-[400px] h-[600px] max-h-[calc(100vh-32px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+            {/* Header Title */}
+            <div className="absolute top-0 w-full text-center pt-5 pb-2 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/80 to-transparent pointer-events-none">
+              <span className="font-serif italic text-gold-300/90 text-[18px]">TedBot</span>
+            </div>
 
             {/* Elegant Close Button */}
             <motion.button
@@ -318,24 +321,21 @@ export const StyleConcierge: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={() => setIsOpen(false)}
-              className="absolute top-8 right-8 z-50 flex flex-col items-center gap-1 group"
+              className="absolute top-4 right-4 z-50 flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors group"
             >
-              <div className="p-3 rounded-full border border-white/10 group-hover:bg-white/5 transition-colors">
-                <X className="w-5 h-5 text-white/40 group-hover:text-white transition-colors" />
-              </div>
-              <span className="font-sans text-[9px] tracking-[0.3em] uppercase text-white/30 group-hover:text-white transition-colors">Close</span>
+              <X className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
             </motion.button>
 
-            {/* Message Area (Refactored for Top-Aligned Scroll) */}
+            {/* Message Area */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col scrollbar-hide py-12"
+              className="relative z-10 w-full flex-1 px-5 overflow-y-auto flex flex-col scrollbar-hide pt-16 pb-2"
               style={{
-                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 94%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 94%, transparent)'
+                maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)'
               }}
             >
               <div className="mt-auto" />
@@ -344,23 +344,23 @@ export const StyleConcierge: React.FC = () => {
                   <motion.div
                     key={msg.id}
                     layout
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: 1,
                       y: 0,
                       transition: {
-                        duration: 0.8,
+                        duration: 0.5,
                         ease: [0.16, 1, 0.3, 1]
                       }
                     }}
-                    exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                    className={`flex mb-8 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                    className={`flex mb-6 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     ref={idx === messages.length - 1 ? latestMessageRef : null}
                   >
-                    <div className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
+                    <div className={`flex gap-3 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
                       {msg.role === 'assistant' && (
                         <div className="mt-1 flex-shrink-0">
-                          <div className="w-10 h-10 rounded-full border border-gold-300/30 overflow-hidden bg-black/40">
+                          <div className="w-8 h-8 rounded-full border border-gold-300/30 overflow-hidden bg-black/40">
                             <img src="/tedsilveraibot.jpg" alt="Ted Silver" className="w-full h-full object-cover grayscale" />
                           </div>
                         </div>
@@ -369,8 +369,8 @@ export const StyleConcierge: React.FC = () => {
                       <div className="flex flex-col">
                         <div className={`
                           ${msg.role === 'assistant'
-                            ? 'font-serif font-normal sm:font-light text-[19.5px] sm:text-[22px] text-white/90 leading-snug italic'
-                            : 'font-sans text-[11px] tracking-[0.2em] uppercase text-gold-300/60 border-r border-gold-300/20 pr-4'
+                            ? 'font-serif font-normal text-[16px] text-white/90 leading-snug italic'
+                            : 'font-sans text-[10px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3'
                           }
                           whitespace-pre-line
                         `}>
@@ -413,46 +413,36 @@ export const StyleConcierge: React.FC = () => {
               <div ref={messagesEndRef} className="h-8 w-full shrink-0" />
             </motion.div>
 
-            {/* Input Console (Bottom Center) */}
+            {/* Input Console */}
             <motion.div
-              initial={{ x: 1000, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 1000, opacity: 0 }}
-              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute bottom-12 z-20 w-full max-w-3xl px-6"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-20 w-full px-5 pb-5 shrink-0 bg-[#050E17]/95"
             >
-              <div className="relative group">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/30 via-white/5 to-gold-300/30 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
-                <div className="relative bg-black/80 backdrop-blur-2xl border border-white/25 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
+              <div className="relative group mt-2">
+                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/20 via-white/5 to-gold-300/20 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
+                <div className="relative bg-black/80 backdrop-blur-2xl border border-white/20 rounded-full flex items-center p-1 pl-5 pr-1 transition-all duration-500 focus-within:border-gold-300/40">
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
-                    placeholder="Share your style inquiries..."
-                    className="flex-1 bg-transparent py-4 text-white/90 placeholder:text-white/50 text-base focus:outline-none font-sans tracking-wide"
+                    placeholder="Message..."
+                    className="flex-1 bg-transparent py-3 text-white/90 placeholder:text-white/40 text-sm focus:outline-none font-sans tracking-wide"
                   />
                   <button
                     onClick={() => onSend(input)}
                     disabled={!input.trim() || isTyping}
-                    className="group"
+                    className="group ml-2"
                   >
-                    <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
-                      <Send className="w-5 h-5 text-gold-300 group-hover:text-black transition-colors" />
+                    <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
+                      <Send className="w-4 h-4 text-gold-300 group-hover:text-black transition-colors" />
                     </div>
                   </button>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Subtle Brand Watermark */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2"
-            >
-              <p className="font-sans text-[10px] text-white/5 uppercase tracking-[0.5em] whitespace-nowrap">Est. 1899 • Cinematic Concierge Experience</p>
             </motion.div>
           </div>
         )}
