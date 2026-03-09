@@ -277,7 +277,7 @@ export const StyleConcierge: React.FC = () => {
                   >
                     <div className="flex flex-col items-end justify-center h-full">
                       <span className="font-serif italic text-xl text-white leading-none">Personal Style Consultation</span>
-                      <p className="font-sans text-[10px] tracking-[0.5em] uppercase text-gold-300/60 mt-2 font-medium">Direct to Ted Silver</p>
+                      <p className="font-sans text-[10px] tracking-[0.5em] uppercase text-gold-300/60 mt-2 font-medium">Direct To TedBot</p>
                     </div>
                   </motion.div>
                 ) : (
