@@ -42,11 +42,41 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
       return "I apologize, I'm having trouble retrieving my notes.";
     }
 
-    // Parse the traces to find text responses
+    // Parse the traces to find text responses and custom actions (redirects)
     let assistantText = "";
+
     for (const trace of traces) {
       if (trace.type === 'text' && trace.payload && trace.payload.message) {
         assistantText += trace.payload.message + "\n\n";
+      }
+
+      // Look for custom Maps_browser action to trigger a redirect
+      // Note: Structure depends on exact Voiceflow configuration, checking common variations.
+      if (
+        trace.type === 'Maps_browser' ||
+        (trace.type === 'custom_action' && trace.payload?.name === 'Maps_browser') ||
+        (trace.type === 'Custom' && trace.payload?.name === 'Maps_browser')
+      ) {
+
+        let targetUrl = '';
+
+        // Try to parse the URL correctly from common payload structures
+        if (typeof trace.payload === 'string') {
+          try {
+            const parsed = JSON.parse(trace.payload);
+            targetUrl = parsed.target_url;
+          } catch (e) { }
+        } else if (trace.payload && trace.payload.target_url) {
+          targetUrl = trace.payload.target_url;
+        }
+
+        if (targetUrl) {
+          console.log(`Voiceflow requested redirect to: ${targetUrl}`);
+          // Delay redirect slightly so the user sees the final chat message
+          setTimeout(() => {
+            window.location.href = targetUrl;
+          }, 1500);
+        }
       }
     }
 
