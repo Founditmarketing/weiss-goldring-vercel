@@ -91,7 +91,7 @@ function App() {
       <Footer onLinkClick={handleFooterLink} onContactClick={openAppointment} />
 
       <AppointmentModal isOpen={isAppointmentOpen} onClose={closeAppointment} />
-      <StyleConcierge />
+      <StyleConcierge isHomePage={currentPage === 'home'} />
     </div>
   );
 }

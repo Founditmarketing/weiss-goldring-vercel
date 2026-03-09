@@ -99,7 +99,7 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
   }
 };
 
-export const StyleConcierge: React.FC = () => {
+export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -272,14 +272,14 @@ export const StyleConcierge: React.FC = () => {
                 <div className="absolute inset-4 rounded-full bg-gold-300/5 blur-2xl group-hover:bg-gold-300/10 transition-colors duration-1000" />
 
 
-                {/* Heritage Background (Appears on scroll) */}
+                {/* Heritage Background (Appears on scroll or on non-home pages) */}
                 <motion.div
                   initial={false}
                   animate={{
-                    backgroundColor: isScrolled ? '#050E17' : 'rgba(0,0,0,0)',
-                    borderColor: isScrolled ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0)',
-                    scale: isScrolled ? 1 : 0.8,
-                    opacity: isScrolled ? 1 : 0
+                    backgroundColor: (isScrolled || !isHomePage) ? '#050E17' : 'rgba(0,0,0,0)',
+                    borderColor: (isScrolled || !isHomePage) ? 'rgba(212, 175, 55, 0.3)' : 'rgba(212, 175, 55, 0)',
+                    scale: (isScrolled || !isHomePage) ? 1 : 0.8,
+                    opacity: (isScrolled || !isHomePage) ? 1 : 0
                   }}
                   className="absolute inset-2 rounded-full border shadow-2xl transition-all duration-700"
                 />
