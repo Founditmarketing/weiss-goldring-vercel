@@ -174,9 +174,11 @@ export const StyleConcierge: React.FC = () => {
   const toggleOpen = () => {
     // Play subtle bell sound only on first interaction
     if (!hasPlayedSoundRef.current) {
-      const audio = new Audio('/freesound_community-bell-98033.mp3');
-      const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-      audio.volume = isMobile ? 0.0008 : 0.005;
+      // Add cache-buster to ensure mobile browsers fetch the latest version
+      const audioPath = `/freesound_community-bell-98033.mp3?v=${Date.now()}`;
+      const audio = new Audio(audioPath);
+      const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+      audio.volume = isMobile ? 0.0003 : 0.005;
       audio.play().catch(e => console.error("Audio play blocked or failed:", e));
       hasPlayedSoundRef.current = true;
     }
