@@ -26,7 +26,7 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
       json = await response.json();
     } catch (e) {
       console.error("API Call Failed. This usually happens if the local dev server (Vite) is not configured to handle /api routes or the environment variable is missing.", e);
-      return "I apologize, but my tailoring room is unusually busy right now. (Technical Note: Connection to the AI service failed. Please ensure the API token is set in .env.local and you are running the project using 'vercel dev'.)";
+      return "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?";
     }
 
     console.log("VERCEL RESPONSE:", json);
