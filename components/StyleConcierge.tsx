@@ -176,7 +176,7 @@ export const StyleConcierge: React.FC = () => {
     if (!hasPlayedSoundRef.current) {
       const audio = new Audio('/freesound_community-bell-98033.mp3');
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-      audio.volume = isMobile ? 0.003 : 0.005;
+      audio.volume = isMobile ? 0.0008 : 0.005;
       audio.play().catch(e => console.error("Audio play blocked or failed:", e));
       hasPlayedSoundRef.current = true;
     }
