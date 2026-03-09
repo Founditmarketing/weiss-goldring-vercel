@@ -99,26 +99,26 @@ export const StyleConcierge: React.FC = () => {
     setSessionKey(randomKey);
   }, []);
 
-  // Auto-scroll logic: Bottom for user, Top-aligned for assistant
+  // Auto-scroll logic: Bottom for user, Top-aligned (beginning) for assistant
   useEffect(() => {
     if (messages.length > 0 && isOpen) {
       const isLastMessageAssistant = messages[0].role === 'assistant';
 
       const timer = setTimeout(() => {
         if (isLastMessageAssistant) {
-          // Align assistant response to the top of the viewport
+          // Align assistant response to show the beginning (start)
           latestMessageRef.current?.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           });
         } else {
-          // Immediately bring user to the bottom
+          // Immediately bring user to the bottom anchor
           messagesEndRef.current?.scrollIntoView({
             behavior: 'smooth',
             block: 'end'
           });
         }
-      }, 100);
+      }, 150);
       return () => clearTimeout(timer);
     }
   }, [messages, isOpen]);
