@@ -56,6 +56,7 @@ export const StyleConcierge: React.FC = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [sessionKey, setSessionKey] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
   const [showInitialTooltip, setShowInitialTooltip] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -194,8 +195,8 @@ export const StyleConcierge: React.FC = () => {
           <div className="fixed sm:bottom-10 sm:right-10 bottom-6 right-6 z-[100]">
             <motion.div
               onMouseMove={handleMouseMove}
-              onMouseLeave={(e) => {
-                handleMouseLeave(e);
+              onMouseLeave={() => {
+                handleMouseLeave();
                 setIsHovered(false);
               }}
               onMouseEnter={() => setIsHovered(true)}
