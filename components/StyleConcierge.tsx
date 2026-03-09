@@ -25,8 +25,8 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
     try {
       json = await response.json();
     } catch (e) {
-      console.error("Vercel returned non-JSON response (likely an error page or timeout):", e);
-      return "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?";
+      console.error("API Call Failed. This usually happens if the local dev server (Vite) is not configured to handle /api routes or the environment variable is missing.", e);
+      return "I apologize, but my tailoring room is unusually busy right now. (Technical Note: Connection to the AI service failed. Please ensure the API token is set in .env.local and you are running the project using 'vercel dev'.)";
     }
 
     console.log("VERCEL RESPONSE:", json);
@@ -85,7 +85,7 @@ export const StyleConcierge: React.FC = () => {
         setMessages([{
           id: '1',
           role: 'assistant',
-          content: "Greetings. I am Ted Silver. It would be my distinct pleasure to offer you a personal style consultation. How may I assist your sartorial needs today?"
+          content: "Greetings. I am Ted Silver. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, and tell me—how may I assist your sartorial needs today?"
         }]);
       }, 1500); // Wait for input bar to finish (1.5s)
       return () => clearTimeout(timer);
@@ -165,7 +165,7 @@ export const StyleConcierge: React.FC = () => {
     if (!hasPlayedSoundRef.current) {
       const audio = new Audio('/freesound_community-bell-98033.mp3');
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-      audio.volume = isMobile ? 0.01 : 0.02;
+      audio.volume = isMobile ? 0.003 : 0.005;
       audio.play().catch(e => console.error("Audio play blocked or failed:", e));
       hasPlayedSoundRef.current = true;
     }
