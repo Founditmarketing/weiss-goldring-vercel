@@ -13,7 +13,7 @@ interface Message {
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
 const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
   try {
-    const response = await fetch('/api/voiceflow', {
+    const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,33 +46,45 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
     let assistantText = "";
 
     for (const trace of traces) {
+      console.log('Voiceflow Trace:', trace); // Log every trace for debugging
+
       if (trace.type === 'text' && trace.payload && trace.payload.message) {
         assistantText += trace.payload.message + "\n\n";
       }
 
-      // Look for custom Maps_browser action to trigger a redirect
-      // Note: Structure depends on exact Voiceflow configuration, checking common variations.
-      if (
+      // Robust check for the Maps_browser custom action
+      const isMapsBrowser =
         trace.type === 'Maps_browser' ||
         (trace.type === 'custom_action' && trace.payload?.name === 'Maps_browser') ||
-        (trace.type === 'Custom' && trace.payload?.name === 'Maps_browser')
-      ) {
+        (trace.type === 'Custom' && trace.payload?.name === 'Maps_browser') ||
+        trace.payload?.action === 'Maps_browser' ||
+        trace.payload?.name === 'Maps_browser';
 
+      if (isMapsBrowser) {
         let targetUrl = '';
 
-        // Try to parse the URL correctly from common payload structures
-        if (typeof trace.payload === 'string') {
-          try {
+        // Safely extract the target_url from the payload
+        try {
+          if (typeof trace.payload === 'string') {
             const parsed = JSON.parse(trace.payload);
             targetUrl = parsed.target_url;
-          } catch (e) { }
-        } else if (trace.payload && trace.payload.target_url) {
-          targetUrl = trace.payload.target_url;
+          } else if (typeof trace.payload === 'object' && trace.payload !== null) {
+            // Check direct property or nested within a parsed JSON string inside the object
+            if (trace.payload.target_url) {
+              targetUrl = trace.payload.target_url;
+            } else if (typeof trace.payload.payload === 'string') {
+              const nestedParsed = JSON.parse(trace.payload.payload);
+              targetUrl = nestedParsed.target_url;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse Voiceflow custom action payload:", e);
         }
 
         if (targetUrl) {
           console.log(`Voiceflow requested redirect to: ${targetUrl}`);
-          // Delay redirect slightly so the user sees the final chat message
+
+          // Delay redirect slightly so the user sees any final chat message Voiceflow sent
           setTimeout(() => {
             window.location.href = targetUrl;
           }, 1500);
@@ -80,7 +92,7 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
       }
     }
 
-    return assistantText.trim() || "I apologize, I didn't quite catch that.";
+    return assistantText.trim(); // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return "I apologize, but I encountered an error while formulating my advice. Please try again.";
@@ -194,8 +206,13 @@ export const StyleConcierge: React.FC = () => {
 
     try {
       const response = await handleConsultationRequest(text, sessionKey);
-      const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: String(response) };
-      setMessages(prev => [assistantMsg, ...prev]);
+
+      // Only add a chat bubble if Voiceflow returned actual text 
+      // (If it only returned a custom action/redirect, response will be empty)
+      if (response && response.trim() !== '') {
+        const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: String(response) };
+        setMessages(prev => [assistantMsg, ...prev]);
+      }
     } catch (error) {
       console.error("onSend Error:", error);
       const errorMsg: Message = {

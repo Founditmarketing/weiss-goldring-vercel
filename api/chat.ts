@@ -19,6 +19,15 @@ export default async function handler(
         });
     }
 
+    const token = process.env.VOICEFLOW_API_KEY;
+
+    if (!token) {
+        console.error("VOICEFLOW_API_KEY environment variable is missing.");
+        return response.status(500).json({
+            error: 'Internal server error: API key missing.'
+        });
+    }
+
     try {
         const apiResponse = await axios.post(
             `https://general-runtime.voiceflow.com/state/user/${sessionKey}/interact`,
@@ -30,7 +39,7 @@ export default async function handler(
             },
             {
                 headers: {
-                    'Authorization': 'VF.DM.69aefe800efddc2f758b449a.OQYqPklKGayyqBWW',
+                    'Authorization': token,
                     'versionID': 'development',
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
@@ -41,8 +50,6 @@ export default async function handler(
         const traces = apiResponse.data;
         console.log("RAW VOICEFLOW RESPONSE (TRACES):", JSON.stringify(traces));
 
-        // For basic text responses, Voiceflow returns traces. We need to parse them on the client,
-        // so we will just return the raw array of traces to the frontend.
         return response.status(200).json({ traces: traces });
 
     } catch (error: any) {
