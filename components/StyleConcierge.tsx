@@ -302,14 +302,14 @@ export const StyleConcierge: React.FC = () => {
       {/* Main Cinematic Interface */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end overflow-hidden h-[100dvh]">
+          <div className="fixed inset-0 z-[100] flex flex-col items-center justify-end overflow-hidden">
             {/* Immersive Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="absolute inset-0 bg-[#050E17] sm:bg-black/60 backdrop-blur-xl z-0"
+              className="absolute inset-0 bg-black/60 backdrop-blur-xl z-0"
             />
 
             {/* Elegant Close Button */}
@@ -332,7 +332,7 @@ export const StyleConcierge: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className="relative z-10 w-full max-w-3xl flex-1 px-6 sm:mb-24 mb-32 overflow-y-auto flex flex-col scrollbar-hide pt-20 pb-12"
+              className="relative z-10 w-full max-w-3xl h-[65vh] px-6 mb-24 overflow-y-auto flex flex-col scrollbar-hide py-12"
               style={{
                 maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 90%, transparent)'
@@ -415,15 +415,15 @@ export const StyleConcierge: React.FC = () => {
 
             {/* Input Console (Bottom Center) */}
             <motion.div
-              initial={{ y: 100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 w-full max-w-3xl px-6 pb-8 sm:pb-12 bg-[#050E17] sm:bg-transparent"
+              initial={{ x: 1000, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 1000, opacity: 0 }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute bottom-12 z-20 w-full max-w-3xl px-6"
             >
               <div className="relative group">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/30 via-white/5 to-gold-300/30 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
-                <div className="relative bg-black/90 sm:bg-black/80 backdrop-blur-2xl border border-white/25 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
+                <div className="relative bg-black/80 backdrop-blur-2xl border border-white/25 rounded-full flex items-center p-1 pl-8 pr-2 transition-all duration-500 focus-within:border-gold-300/50">
                   <input
                     type="text"
                     value={input}
