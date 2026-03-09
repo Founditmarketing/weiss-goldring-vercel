@@ -60,6 +60,7 @@ export const StyleConcierge: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const latestMessageRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasPlayedSoundRef = useRef(false);
 
   // Track scroll position for bell background dynamics
@@ -98,19 +99,29 @@ export const StyleConcierge: React.FC = () => {
     setSessionKey(randomKey);
   }, []);
 
-  // Auto-scroll to latest message
+  // Auto-scroll logic: Bottom for user, Top-aligned for assistant
   useEffect(() => {
-    if (messages.length > 0) {
-      // Small delay to allow Framer Motion animations to start/calculate
+    if (messages.length > 0 && isOpen) {
+      const isLastMessageAssistant = messages[0].role === 'assistant';
+
       const timer = setTimeout(() => {
-        latestMessageRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        if (isLastMessageAssistant) {
+          // Align assistant response to the top of the viewport
+          latestMessageRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        } else {
+          // Immediately bring user to the bottom
+          messagesEndRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end'
+          });
+        }
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [messages.length, isOpen]);
+  }, [messages, isOpen]);
 
   // Magnetic Button Logic
   const x = useMotionValue(0);
@@ -376,6 +387,7 @@ export const StyleConcierge: React.FC = () => {
                   <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white/20">Ted is formulating advice</span>
                 </motion.div>
               )}
+              <div ref={messagesEndRef} className="h-1 w-full shrink-0" />
             </motion.div>
 
             {/* Input Console (Bottom Center) */}
