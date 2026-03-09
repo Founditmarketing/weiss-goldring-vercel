@@ -173,14 +173,18 @@ export const StyleConcierge: React.FC = () => {
   };
 
   const toggleOpen = () => {
-    // Play subtle bell sound only on first interaction
+    // Play subtle bell sound only on first interaction and NOT on mobile
     if (!hasPlayedSoundRef.current) {
-      // Add cache-buster to ensure mobile browsers fetch the latest version
-      const audioPath = `/freesound_community-bell-98033.mp3?v=${Date.now()}`;
-      const audio = new Audio(audioPath);
       const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
-      audio.volume = isMobile ? 0.0003 : 0.005;
-      audio.play().catch(e => console.error("Audio play blocked or failed:", e));
+
+      if (!isMobile) {
+        // Add cache-buster to ensure browsers fetch the latest version
+        const audioPath = `/freesound_community-bell-98033.mp3?v=${Date.now()}`;
+        const audio = new Audio(audioPath);
+        audio.volume = 0.005; // Standard desktop volume
+        audio.play().catch(e => console.error("Audio play blocked or failed:", e));
+      }
+
       hasPlayedSoundRef.current = true;
     }
 
