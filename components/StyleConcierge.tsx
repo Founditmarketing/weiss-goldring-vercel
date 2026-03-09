@@ -87,7 +87,7 @@ export const StyleConcierge: React.FC = () => {
         setMessages([{
           id: '1',
           role: 'assistant',
-          content: "Greetings. I am Ted Silver. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, and tell me—how may I assist your sartorial needs today?"
+          content: "I am TedBot, your personal concierge. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, and tell me—how may I assist your sartorial needs today?"
         }]);
       }, 1500); // Wait for input bar to finish (1.5s)
       return () => clearTimeout(timer);
