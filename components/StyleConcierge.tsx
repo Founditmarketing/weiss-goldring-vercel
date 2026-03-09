@@ -388,7 +388,7 @@ export const StyleConcierge: React.FC = () => {
                   <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-white/20">Ted is formulating advice</span>
                 </motion.div>
               )}
-              <div ref={messagesEndRef} className="h-1 w-full shrink-0" />
+              <div ref={messagesEndRef} className="h-24 w-full shrink-0" />
             </motion.div>
 
             {/* Input Console (Bottom Center) */}
