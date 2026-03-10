@@ -356,7 +356,7 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
       {/* Main Cinematic Interface */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] w-[calc(100vw-32px)] sm:w-[400px] h-[600px] max-h-[calc(100vh-32px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+          <div className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] w-[320px] max-w-[calc(100vw-32px)] sm:w-[400px] h-[450px] sm:h-[600px] max-h-[calc(100vh-100px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             {/* Header Title */}
             <div className="absolute top-0 w-full text-center pt-5 pb-2 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/80 to-transparent pointer-events-none">
               <span className="font-serif italic text-gold-300/90 text-[18px]">TedBot</span>
