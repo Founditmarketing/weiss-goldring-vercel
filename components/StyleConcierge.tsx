@@ -356,7 +356,12 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
       {/* Main Cinematic Interface */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] w-[320px] max-w-[calc(100vw-32px)] sm:w-[400px] h-[450px] sm:h-[600px] max-h-[calc(100vh-100px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] origin-bottom-right w-[320px] max-w-[calc(100vw-32px)] sm:w-[400px] h-[450px] sm:h-[600px] max-h-[calc(100vh-100px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             {/* Header Title */}
             <div className="absolute top-0 w-full text-center pt-5 pb-2 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/80 to-transparent pointer-events-none">
               <span className="font-serif italic text-gold-300/90 text-[18px]">Personal Concierge</span>
@@ -416,8 +421,8 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
                       <div className="flex flex-col">
                         <div className={`
                           ${msg.role === 'assistant'
-                            ? 'font-serif font-normal text-[16px] text-white/90 leading-snug italic'
-                            : 'font-sans text-[10px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3'
+                            ? 'font-serif font-normal text-[18px] sm:text-[19px] text-white/90 leading-relaxed italic'
+                            : 'font-sans text-[11px] sm:text-[12px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3 leading-relaxed'
                           }
                           whitespace-pre-line
                         `}>
@@ -491,7 +496,7 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
                 </div>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
