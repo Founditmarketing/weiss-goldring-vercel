@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import Send from 'lucide-react/dist/esm/icons/send';
 import X from 'lucide-react/dist/esm/icons/x';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
+import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
 
 interface Message {
   id: string;
@@ -545,11 +546,30 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                             <span className="text-[10px] sm:text-[11px] font-sans tracking-wide text-white/50 px-1 -mb-1">
                               Tap the calendar icon to select your time
                             </span>
-                            <input
-                              type="datetime-local"
-                              id={`calendar-${msg.id}`}
-                              className="bg-black/40 border border-gold-300/30 text-white/90 rounded-md p-2 font-sans text-sm focus:outline-none focus:border-gold-300/60 transition-colors"
-                            />
+                            <div className="relative w-full">
+                              <input
+                                type="datetime-local"
+                                id={`calendar-${msg.id}`}
+                                step="1800"
+                                className="w-full bg-black/40 border border-gold-300/30 text-white/90 rounded-md p-2 pl-3 pr-10 font-sans text-sm focus:outline-none focus:border-gold-300/60 transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full"
+                              />
+                              <button
+                                aria-label="Open Calendar"
+                                onClick={() => {
+                                  const inputEl = document.getElementById(`calendar-${msg.id}`) as HTMLInputElement;
+                                  if (inputEl && typeof inputEl.showPicker === 'function') {
+                                    try {
+                                      inputEl.showPicker();
+                                    } catch (e) {
+                                      console.log("showPicker not supported or blocked", e);
+                                    }
+                                  }
+                                }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gold-300/70 hover:text-gold-300 hover:bg-white/5 rounded-md transition-colors pointer-events-none sm:pointer-events-auto"
+                              >
+                                <CalendarIcon className="w-4 h-4" />
+                              </button>
+                            </div>
                             <button
                               onClick={() => {
                                 const inputEl = document.getElementById(`calendar-${msg.id}`) as HTMLInputElement;
@@ -561,6 +581,29 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                   const [yyyy, mm, dd] = datePart.split('-');
                                   const [HH, min] = timePart.split(':');
                                   const dateObj = new Date(Number(yyyy), Number(mm) - 1, Number(dd), Number(HH), Number(min));
+                                  
+                                  // Validation Logic: Mon-Fri 10am-6pm, Sat 10am-5pm. Sun Closed.
+                                  const dayOfWeek = dateObj.getDay(); // 0 is Sunday, 6 is Saturday
+                                  const hour = dateObj.getHours(); // 0-23
+                                  
+                                  let isValid = true;
+                                  
+                                  if (dayOfWeek === 0) isValid = false; // Sunday
+                                  if (hour < 10) isValid = false; // Before 10 AM
+                                  if (dayOfWeek >= 1 && dayOfWeek <= 5 && hour >= 18) isValid = false; // Mon-Fri after 6PM
+                                  if (dayOfWeek === 6 && hour >= 17) isValid = false; // Saturday after 5PM
+                                  
+                                  if (!isValid) {
+                                    // Inject local error message from Assistant without closing the picker or submitting to Voiceflow
+                                    const errorMsg: Message = {
+                                      id: Date.now().toString(),
+                                      role: 'assistant',
+                                      content: "I do apologize, it appears my calendar is either already spoken for at that moment, or it falls outside of our standard operating hours.\n\nAs a reminder, we are here Monday through Friday from 10 AM to 6 PM, and Saturday from 10 AM to 5 PM.\n\nWhat other day and time might suit your schedule?"
+                                    };
+                                    setMessages(prev => [errorMsg, ...prev]);
+                                    return;
+                                  }
+
                                   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                                   const month = monthNames[dateObj.getMonth()];
                                   const day = dateObj.getDate();
