@@ -363,7 +363,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] origin-bottom-right w-[320px] max-w-[calc(100vw-32px)] sm:w-[400px] h-[450px] sm:h-[600px] max-h-[calc(100vh-100px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             {/* Header Title */}
-            <div className="absolute top-0 w-full text-center pt-5 pb-2 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/80 to-transparent pointer-events-none">
+            <div className="absolute top-0 w-full text-center pt-5 pb-16 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/95 via-50% to-transparent pointer-events-none">
               <span className="font-serif italic text-gold-300/90 text-[18px]">Personal Concierge</span>
             </div>
 
@@ -404,8 +404,8 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               ref={scrollContainerRef}
               className="relative z-10 w-full flex-1 px-5 overflow-y-auto flex flex-col scrollbar-hide pt-[88px] pb-2"
               style={{
-                maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)'
+                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 98%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 98%, transparent)'
               }}
             >
               <div className="mt-auto" />
