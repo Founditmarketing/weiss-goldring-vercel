@@ -162,6 +162,11 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasPlayedSoundRef = useRef(false);
 
+  // Get current date-time for restricting past selections in calendar
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  const minDateTime = now.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
+
   // Track scroll position for bell background dynamics
   useEffect(() => {
     const handleScroll = () => {
@@ -576,14 +581,15 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                         {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
                           <div className="mt-4 flex flex-col gap-3">
                             <span className="text-[10px] sm:text-[11px] font-sans tracking-wide text-white/50 px-1 -mb-1">
-                              Tap the calendar icon to select your time
+                              Appointments: Mon-Fri 10AM-6PM, Sat 10AM-5PM
                             </span>
                             <div className="relative w-full">
                               <input
                                 type="datetime-local"
                                 id={`calendar-${msg.id}`}
                                 step="1800"
-                                className="w-full bg-black/40 border border-gold-300/30 text-white/90 rounded-md p-2 pl-3 pr-10 font-sans text-sm focus:outline-none focus:border-gold-300/60 transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full"
+                                min={minDateTime}
+                                className="w-full bg-black/40 border border-gold-300/30 text-white/90 rounded-md p-2 pl-3 pr-10 font-sans text-sm focus:outline-none focus:border-gold-300/60 transition-colors [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full cursor-pointer"
                               />
                               <button
                                 aria-label="Open Calendar"
