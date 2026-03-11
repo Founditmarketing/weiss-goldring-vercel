@@ -102,9 +102,17 @@ export const Footer: React.FC<FooterProps> = ({ onLinkClick, onContactClick }) =
 
         {/* Bottom Bar */}
         <div className="border-t border-navy-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-600 text-xs font-sans">
-            © {new Date().getFullYear()} Weiss & Goldring. All Rights Reserved.
-          </p>
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+            <p className="text-gray-600 text-xs font-sans">
+              © {new Date().getFullYear()} Weiss & Goldring. All Rights Reserved.
+            </p>
+            <button 
+              onClick={() => onLinkClick('privacy')}
+              className="text-gray-500 hover:text-white text-xs font-sans transition-colors"
+            >
+              Privacy Policy
+            </button>
+          </div>
           <div className="flex gap-6">
             <a href="https://www.instagram.com/weissgoldring/?hl=en" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gold-500 transition-colors"><Instagram className="w-4 h-4" /></a>
             <a href="https://www.facebook.com/WeissGoldring/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gold-500 transition-colors"><Facebook className="w-4 h-4" /></a>

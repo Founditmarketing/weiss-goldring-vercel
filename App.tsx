@@ -10,8 +10,9 @@ import { HeritagePage } from './components/HeritagePage';
 import { MerchandisePage } from './components/MerchandisePage';
 import { Services } from './components/Services';
 import { StyleConcierge } from './components/StyleConcierge';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
 
-type Page = 'home' | 'heritage' | 'brands' | 'ted';
+type Page = 'home' | 'heritage' | 'brands' | 'ted' | 'privacy';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -57,6 +58,8 @@ function App() {
       navigateTo('brands');
     } else if (href === '#ted') {
       scrollToSection('ted');
+    } else if (href === '#privacy') {
+      navigateTo('privacy');
     } else {
       // Default fallback
       navigateTo('home');
@@ -85,6 +88,10 @@ function App() {
 
         {currentPage === 'brands' && (
           <MerchandisePage onBack={() => navigateTo('home')} />
+        )}
+
+        {currentPage === 'privacy' && (
+          <PrivacyPolicy onBack={() => navigateTo('home')} />
         )}
       </main>
 

@@ -136,7 +136,7 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
         setMessages([{
           id: '1',
           role: 'assistant',
-          content: "I am TedBot, your personal concierge. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, and tell me—how may I assist your sartorial needs today?"
+          content: "I am TedBot, your personal concierge. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, first & last?"
         }]);
       }, 1500); // Wait for input bar to finish (1.5s)
       return () => clearTimeout(timer);
@@ -378,13 +378,27 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
               <X className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
             </motion.button>
 
+            {/* Privacy Disclaimer Notice */}
+            <div className="absolute top-[48px] w-full text-center px-8 z-40">
+              <p className="text-[9px] text-white/30 font-sans tracking-wide leading-tight">
+                By messaging, you acknowledge that you have read and agree to our
+                <a 
+                  href="#privacy" 
+                  onClick={() => setIsOpen(false)}
+                  className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50"
+                >
+                  Privacy Policy
+                </a>.
+              </p>
+            </div>
+
             {/* Message Area */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className="relative z-10 w-full flex-1 px-5 overflow-y-auto flex flex-col scrollbar-hide pt-16 pb-2"
+              className="relative z-10 w-full flex-1 px-5 overflow-y-auto flex flex-col scrollbar-hide pt-[88px] pb-2"
               style={{
                 maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 98%, transparent)'
@@ -421,8 +435,8 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
                       <div className="flex flex-col">
                         <div className={`
                           ${msg.role === 'assistant'
-                            ? 'font-serif font-normal text-[16.5px] sm:text-[17.5px] text-white/90 leading-normal italic'
-                            : 'font-sans text-[10px] sm:text-[11px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3 leading-snug'
+                            ? 'font-serif font-normal text-[16.5px] sm:text-[17.5px] text-white/90 leading-snug italic'
+                            : 'font-sans text-[10px] sm:text-[11px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3 leading-normal'
                           }
                           whitespace-pre-line
                         `}>
