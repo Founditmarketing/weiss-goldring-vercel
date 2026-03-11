@@ -464,14 +464,11 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="fixed top-0 right-0 z-[100] w-full sm:w-[450px] h-[100dvh] bg-[#091521]/95 border-l border-gold-300/20 shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             
-            {/* Very faint, elegant line background pattern (Luxury Diagonal Lattice) */}
+            {/* Very faint, elegant vertical pinstripe background (Sartorial luxury) */}
             <div 
-              className="absolute inset-0 z-0 pointer-events-none"
+              className="absolute inset-0 z-0 pointer-events-none opacity-40"
               style={{
-                backgroundImage: `
-                  repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.04) 0, rgba(212, 175, 55, 0.04) 1px, transparent 1px, transparent 40px),
-                  repeating-linear-gradient(-45deg, rgba(212, 175, 55, 0.04) 0, rgba(212, 175, 55, 0.04) 1px, transparent 1px, transparent 40px)
-                `
+                backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(212, 175, 55, 0.025) 39px, rgba(212, 175, 55, 0.025) 40px)`
               }}
             />
 
