@@ -458,30 +458,42 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[100] origin-bottom-right w-[320px] max-w-[calc(100vw-32px)] sm:w-[400px] h-[450px] sm:h-[600px] max-h-[calc(100vh-100px)] bg-[#050E17]/95 border border-gold-300/20 shadow-2xl rounded-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+            className="fixed top-0 right-0 z-[100] w-full sm:w-[450px] h-[100dvh] bg-[#091521]/95 border-l border-gold-300/20 shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+            
+            {/* Very faint, elegant line background pattern (Luxury Diagonal Lattice) */}
+            <div 
+              className="absolute inset-0 z-0 pointer-events-none"
+              style={{
+                backgroundImage: `
+                  repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.04) 0, rgba(212, 175, 55, 0.04) 1px, transparent 1px, transparent 40px),
+                  repeating-linear-gradient(-45deg, rgba(212, 175, 55, 0.04) 0, rgba(212, 175, 55, 0.04) 1px, transparent 1px, transparent 40px)
+                `
+              }}
+            />
+
             {/* Header Title */}
-            <div className="absolute top-0 w-full text-center pt-5 pb-16 z-40 bg-gradient-to-b from-[#050E17] via-[#050E17]/95 via-50% to-transparent pointer-events-none">
-              <span className="font-serif italic text-gold-300/90 text-[18px]">Personal Concierge</span>
+            <div className="absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent pointer-events-none">
+              <span className="font-serif italic text-gold-300/90 text-[19px]">Personal Concierge</span>
             </div>
 
             {/* Elegant Close Button */}
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="absolute top-4 right-4 z-50 flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors group"
+              className="absolute top-6 right-6 z-50 flex items-center justify-center p-2 rounded-full hover:bg-white/10 transition-colors group"
             >
               <X className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
             </motion.button>
 
             {/* Privacy Disclaimer Notice */}
-            <div className="absolute top-[48px] w-full text-center px-8 z-40">
-              <p className="text-[9px] text-white/30 font-sans tracking-wide leading-tight">
+            <div className="absolute top-[56px] w-full text-center px-8 z-40">
+              <p className="text-[10px] text-white/30 font-sans tracking-wide leading-tight">
                 By messaging, you acknowledge that you have read and agree to our
                 <button 
                   onClick={() => {
@@ -503,10 +515,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className="relative z-10 w-full flex-1 px-5 overflow-y-auto flex flex-col scrollbar-hide pt-[88px] pb-2"
+              className="relative z-10 w-full flex-1 px-6 overflow-y-auto flex flex-col scrollbar-hide pt-[110px] pb-4"
               style={{
-                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 98%, transparent)',
-                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 98%, transparent)'
+                maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)'
               }}
             >
               <div className="mt-auto" />
@@ -698,11 +710,11 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
 
             {/* Input Console */}
             <motion.div
-              initial={{ y: 50, opacity: 0 }}
+              initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
+              exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 w-full px-5 pb-5 shrink-0 bg-[#050E17]/95"
+              className="relative z-20 w-full px-6 pb-8 shrink-0 bg-[#050E17]/95"
             >
               <div className="relative group mt-2">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/20 via-white/5 to-gold-300/20 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
