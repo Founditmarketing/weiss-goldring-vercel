@@ -162,6 +162,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasPlayedSoundRef = useRef(false);
 
+  // Hide the text input field if the newest message is from the assistant and expects a button or calendar response
+  const latestMessage = messages.length > 0 ? messages[0] : null;
+  const isInputHidden = latestMessage?.role === 'assistant' && (
+    (latestMessage.buttons && latestMessage.buttons.length > 0) || 
+    (latestMessage.isCalendarPicker && !latestMessage.calendarSubmitted)
+  );
+
   // Get current date-time for restricting past selections in calendar
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -512,7 +519,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className="relative z-10 w-full flex-1 px-6 overflow-y-auto flex flex-col scrollbar-hide pt-[110px] pb-4"
+              className={`relative z-10 w-full flex-1 px-6 overflow-y-auto flex flex-col scrollbar-hide pt-[110px] transition-all duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
               style={{
                 maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)'
@@ -706,36 +713,40 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             </motion.div>
 
             {/* Input Console */}
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 20, opacity: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 w-full px-6 py-6 shrink-0 bg-[#091521]/95 border-t border-white/[0.02]"
-            >
-              <div className="relative group">
-                <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/20 via-white/5 to-gold-300/20 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
-                <div className="relative bg-black/80 backdrop-blur-2xl border border-white/20 rounded-full flex items-center p-1 pl-5 pr-1 transition-all duration-500 focus-within:border-gold-300/40">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
-                    placeholder="Message..."
-                    className="flex-1 bg-transparent py-3 text-white/90 placeholder:text-white/40 text-sm focus:outline-none font-sans tracking-wide"
-                  />
-                  <button
-                    onClick={() => onSend(input)}
-                    disabled={!input.trim() || isTyping}
-                    className="group ml-2"
-                  >
-                    <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
-                      <Send className="w-4 h-4 text-gold-300 group-hover:text-black transition-colors" />
+            <AnimatePresence>
+              {!isInputHidden && (
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 80, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative z-20 w-full px-6 py-6 shrink-0 bg-[#091521]/95 border-t border-white/[0.02]"
+                >
+                  <div className="relative group">
+                    <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/20 via-white/5 to-gold-300/20 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
+                    <div className="relative bg-black/80 backdrop-blur-2xl border border-white/20 rounded-full flex items-center p-1 pl-5 pr-1 transition-all duration-500 focus-within:border-gold-300/40">
+                      <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
+                        placeholder="Message..."
+                        className="flex-1 bg-transparent py-3 text-white/90 placeholder:text-white/40 text-sm focus:outline-none font-sans tracking-wide"
+                      />
+                      <button
+                        onClick={() => onSend(input)}
+                        disabled={!input.trim() || isTyping}
+                        className="group ml-2"
+                      >
+                        <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
+                          <Send className="w-4 h-4 text-gold-300 group-hover:text-black transition-colors" />
+                        </div>
+                      </button>
                     </div>
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
