@@ -564,7 +564,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                           <div className="mt-4 flex flex-wrap gap-2">
                             {msg.buttons.map((btn, bIdx) => {
                               // Only enable buttons on the very latest message so historical choices are locked out
-                              const isLatestMessage = idx === 0;
+                              const isLatestMessage = idx === messages.length - 1;
                               const disabled = !isLatestMessage || isTyping;
                               return (
                                 <button
