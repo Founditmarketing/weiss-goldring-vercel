@@ -542,6 +542,9 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                         </div>
                         {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
                           <div className="mt-4 flex flex-col gap-3">
+                            <span className="text-[10px] sm:text-[11px] font-sans tracking-wide text-white/50 px-1 -mb-1">
+                              Tap the calendar icon to select your time
+                            </span>
                             <input
                               type="datetime-local"
                               id={`calendar-${msg.id}`}
