@@ -11,14 +11,14 @@ interface Message {
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
-const handleConsultationRequest = async (message: string, userKey: string): Promise<string> => {
+const handleConsultationRequest = async (message: string, userKey: string, type: string = 'text'): Promise<string> => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: message, sessionKey: userKey }),
+      body: JSON.stringify({ query: message, sessionKey: userKey, type }),
     });
 
     let json;
@@ -129,19 +129,35 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     return () => clearTimeout(timer);
   }, []);
 
-  // Sequence initial greeting
+  // Sequence initial greeting from Voiceflow
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      const timer = setTimeout(() => {
-        setMessages([{
-          id: '1',
-          role: 'assistant',
-          content: "I am TedBot, your personal concierge. It would be my distinct pleasure to offer you a personal style consultation. Before we begin, may I have your name, first & last?"
-        }]);
-      }, 1500); // Wait for input bar to finish (1.5s)
-      return () => clearTimeout(timer);
+    if (isOpen && messages.length === 0 && sessionKey) {
+      const fetchGreeting = async () => {
+        setIsTyping(true);
+        try {
+          const response = await handleConsultationRequest('', sessionKey, 'launch');
+          if (response && response.trim() !== '') {
+            setMessages([{
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: String(response)
+            }]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch initial greeting:", error);
+          setMessages([{
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: "I am TedBot, your personal concierge. It would be my distinct pleasure to offer you a personal style consultation. How may I assist you today?"
+          }]);
+        } finally {
+          setIsTyping(false);
+        }
+      };
+
+      fetchGreeting();
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, messages.length, sessionKey]);
 
   // Generate session key on mount
   useEffect(() => {

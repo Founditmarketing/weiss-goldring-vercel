@@ -11,11 +11,11 @@ export default async function handler(
         return response.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { query, sessionKey } = request.body;
+    const { query, sessionKey, type = 'text' } = request.body;
 
-    if (!query || !sessionKey) {
+    if (!sessionKey || (type !== 'launch' && !query)) {
         return response.status(400).json({
-            error: 'The function must be called with "query" and "sessionKey".'
+            error: 'The function must be called with "sessionKey" and either "query" or type "launch".'
         });
     }
 
@@ -29,14 +29,13 @@ export default async function handler(
     }
 
     try {
+        const actionPayload = type === 'launch' 
+            ? { type: 'launch' }
+            : { type: 'text', payload: query };
+
         const apiResponse = await axios.post(
             `https://general-runtime.voiceflow.com/state/user/${sessionKey}/interact`,
-            {
-                action: {
-                    type: "text",
-                    payload: query
-                }
-            },
+            { action: actionPayload },
             {
                 headers: {
                     'Authorization': token,
