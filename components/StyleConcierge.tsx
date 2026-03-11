@@ -11,11 +11,13 @@ interface Message {
   content: string;
   isCalendarPicker?: boolean;
   calendarSubmitted?: boolean;
+  buttons?: { name: string, payload: any }[];
 }
 
 interface ConsultationResponse {
   text: string;
   hasCalendarPicker: boolean;
+  buttons?: { name: string, payload: any }[];
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
@@ -59,15 +61,29 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       };
     }
 
-    // Parse the traces to find text responses and custom actions (redirects, calendar picker)
+    // Parse the traces to find text responses and custom actions (redirects, calendar picker, buttons)
     let assistantText = "";
     let hasCalendarPicker = false;
+    let buttons: { name: string, payload: any }[] = [];
 
     for (const trace of traces) {
       console.log('Voiceflow Trace:', trace); // Log every trace for debugging
 
       if (trace.type === 'text' && trace.payload && trace.payload.message) {
         assistantText += trace.payload.message + "\n\n";
+      }
+
+      // Check for Choice Buttons
+      if (trace.type === 'choice' && trace.payload?.buttons) {
+        // Voiceflow 'choice' traces often contain a 'buttons' array with 'name' and 'request.payload'
+        trace.payload.buttons.forEach((b: any) => {
+          if (b.name) {
+             buttons.push({ 
+               name: b.name, 
+               payload: b.request?.payload || b.name 
+             });
+          }
+        });
       }
 
       // Check for Custom Action: calendar_picker
@@ -122,7 +138,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       }
     }
 
-    return { text: assistantText.trim(), hasCalendarPicker }; // We return empty string if there's ONLY a redirect trace
+    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined }; // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return { 
@@ -169,12 +185,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
         setIsTyping(true);
         try {
           const response = await handleConsultationRequest('', sessionKey, 'launch');
-          if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
+          if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
             setMessages([{
               id: Date.now().toString(),
               role: 'assistant',
               content: response.text,
-              isCalendarPicker: response.hasCalendarPicker
+              isCalendarPicker: response.hasCalendarPicker,
+              buttons: response.buttons
             }]);
           }
         } catch (error) {
@@ -257,13 +274,14 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     try {
       const response = await handleConsultationRequest(text, sessionKey);
 
-      // Only add a chat bubble if Voiceflow returned actual text or a calendar picker
-      if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
+      // Only add a chat bubble if Voiceflow returned actual text, buttons, or a calendar picker
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
         const assistantMsg: Message = { 
           id: (Date.now() + 1).toString(), 
           role: 'assistant', 
           content: response.text,
-          isCalendarPicker: response.hasCalendarPicker
+          isCalendarPicker: response.hasCalendarPicker,
+          buttons: response.buttons
         };
         setMessages(prev => [assistantMsg, ...prev]);
       }
@@ -292,12 +310,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     try {
       const response = await handleConsultationRequest(isoString, sessionKey);
 
-      if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
         const assistantMsg: Message = { 
           id: (Date.now() + 1).toString(), 
           role: 'assistant', 
           content: response.text,
-          isCalendarPicker: response.hasCalendarPicker
+          isCalendarPicker: response.hasCalendarPicker,
+          buttons: response.buttons
         };
         setMessages(prev => [assistantMsg, ...prev]);
       }
@@ -541,6 +560,30 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                             : msg.content
                           }
                         </div>
+                        {msg.role === 'assistant' && msg.buttons && msg.buttons.length > 0 && (
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {msg.buttons.map((btn, bIdx) => {
+                              // Only enable buttons on the very latest message so historical choices are locked out
+                              const isLatestMessage = idx === 0;
+                              const disabled = !isLatestMessage || isTyping;
+                              return (
+                                <button
+                                  key={bIdx}
+                                  disabled={disabled}
+                                  onClick={() => onSend(btn.name)}
+                                  className={`
+                                    border rounded-full py-1.5 px-3 font-sans text-[11px] tracking-wide transition-all duration-300 text-left
+                                    ${disabled 
+                                      ? 'border-gold-300/10 text-white/20 bg-transparent cursor-not-allowed' 
+                                      : 'border-gold-300/40 text-gold-200 bg-gold-900/10 hover:bg-gold-500/20 hover:border-gold-300'}
+                                  `}
+                                >
+                                  {btn.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                         {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
                           <div className="mt-4 flex flex-col gap-3">
                             <span className="text-[10px] sm:text-[11px] font-sans tracking-wide text-white/50 px-1 -mb-1">
