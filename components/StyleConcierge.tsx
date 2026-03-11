@@ -8,10 +8,17 @@ interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  isCalendarPicker?: boolean;
+  calendarSubmitted?: boolean;
+}
+
+interface ConsultationResponse {
+  text: string;
+  hasCalendarPicker: boolean;
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
-const handleConsultationRequest = async (message: string, userKey: string, type: string = 'text'): Promise<string> => {
+const handleConsultationRequest = async (message: string, userKey: string, type: string = 'text'): Promise<ConsultationResponse> => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -26,30 +33,52 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       json = await response.json();
     } catch (e) {
       console.error("API Call Failed.", e);
-      return "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?";
+      return { 
+        text: "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again in a moment?", 
+        hasCalendarPicker: false 
+      };
     }
 
     console.log("VOICEFLOW TRACES:", json);
 
     if (!response.ok) {
       console.error("Vercel returned an error:", json);
-      return typeof json.error === 'string' ? json.error : "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly.";
+      return { 
+        text: typeof json.error === 'string' ? json.error : "I apologize, but I need to step into the tailoring room for a moment. Please try again shortly.",
+        hasCalendarPicker: false
+      };
     }
 
     const traces = json.traces;
     if (!Array.isArray(traces)) {
       console.warn("Voiceflow returned invalid trace array:", json);
-      return "I apologize, I'm having trouble retrieving my notes.";
+      return { 
+        text: "I apologize, I'm having trouble retrieving my notes.",
+        hasCalendarPicker: false
+      };
     }
 
-    // Parse the traces to find text responses and custom actions (redirects)
+    // Parse the traces to find text responses and custom actions (redirects, calendar picker)
     let assistantText = "";
+    let hasCalendarPicker = false;
 
     for (const trace of traces) {
       console.log('Voiceflow Trace:', trace); // Log every trace for debugging
 
       if (trace.type === 'text' && trace.payload && trace.payload.message) {
         assistantText += trace.payload.message + "\n\n";
+      }
+
+      // Check for Custom Action: calendar_picker
+      const isCalendarPicker =
+        trace.type === 'calendar_picker' ||
+        (trace.type === 'custom_action' && trace.payload?.name === 'calendar_picker') ||
+        (trace.type === 'Custom' && trace.payload?.name === 'calendar_picker') ||
+        trace.payload?.action === 'calendar_picker' ||
+        trace.payload?.name === 'calendar_picker';
+
+      if (isCalendarPicker) {
+        hasCalendarPicker = true;
       }
 
       // Robust check for the Maps_browser custom action
@@ -92,10 +121,13 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       }
     }
 
-    return assistantText.trim(); // We return empty string if there's ONLY a redirect trace
+    return { text: assistantText.trim(), hasCalendarPicker }; // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
-    return "I apologize, but I encountered an error while formulating my advice. Please try again.";
+    return { 
+      text: "I apologize, but I encountered an error while formulating my advice. Please try again.",
+      hasCalendarPicker: false
+    };
   }
 };
 
@@ -136,11 +168,12 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
         setIsTyping(true);
         try {
           const response = await handleConsultationRequest('', sessionKey, 'launch');
-          if (response && response.trim() !== '') {
+          if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
             setMessages([{
               id: Date.now().toString(),
               role: 'assistant',
-              content: String(response)
+              content: response.text,
+              isCalendarPicker: response.hasCalendarPicker
             }]);
           }
         } catch (error) {
@@ -223,14 +256,52 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     try {
       const response = await handleConsultationRequest(text, sessionKey);
 
-      // Only add a chat bubble if Voiceflow returned actual text 
-      // (If it only returned a custom action/redirect, response will be empty)
-      if (response && response.trim() !== '') {
-        const assistantMsg: Message = { id: (Date.now() + 1).toString(), role: 'assistant', content: String(response) };
+      // Only add a chat bubble if Voiceflow returned actual text or a calendar picker
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
+        const assistantMsg: Message = { 
+          id: (Date.now() + 1).toString(), 
+          role: 'assistant', 
+          content: response.text,
+          isCalendarPicker: response.hasCalendarPicker
+        };
         setMessages(prev => [assistantMsg, ...prev]);
       }
     } catch (error) {
       console.error("onSend Error:", error);
+      const errorMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: "I apologize, but my tailoring room is unusually busy right now. Could you please try asking that again?"
+      };
+      setMessages(prev => [errorMsg, ...prev]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const onCalendarSubmit = async (messageId: string, isoString: string, humanReadableString: string) => {
+    // 1. Mark the calendar message as submitted to hide the picker
+    setMessages(prev => prev.map(m => m.id === messageId ? { ...m, calendarSubmitted: true } : m));
+    
+    // 2. Add the user message to the UI
+    const userMsg: Message = { id: Date.now().toString(), role: 'user', content: humanReadableString };
+    setMessages(prev => [userMsg, ...prev]);
+    setIsTyping(true);
+
+    try {
+      const response = await handleConsultationRequest(isoString, sessionKey);
+
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker)) {
+        const assistantMsg: Message = { 
+          id: (Date.now() + 1).toString(), 
+          role: 'assistant', 
+          content: response.text,
+          isCalendarPicker: response.hasCalendarPicker
+        };
+        setMessages(prev => [assistantMsg, ...prev]);
+      }
+    } catch (error) {
+      console.error("onCalendarSubmit Error:", error);
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -469,6 +540,48 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                             : msg.content
                           }
                         </div>
+                        {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
+                          <div className="mt-4 flex flex-col gap-3">
+                            <input
+                              type="datetime-local"
+                              id={`calendar-${msg.id}`}
+                              className="bg-black/40 border border-gold-300/30 text-white/90 rounded-md p-2 font-sans text-sm focus:outline-none focus:border-gold-300/60 transition-colors"
+                            />
+                            <button
+                              onClick={() => {
+                                const inputEl = document.getElementById(`calendar-${msg.id}`) as HTMLInputElement;
+                                if (inputEl && inputEl.value) {
+                                  const dateValue = inputEl.value; // "YYYY-MM-DDTHH:mm"
+                                  const isoString = `${dateValue}:00-05:00`;
+                                  
+                                  const [datePart, timePart] = dateValue.split('T');
+                                  const [yyyy, mm, dd] = datePart.split('-');
+                                  const [HH, min] = timePart.split(':');
+                                  const dateObj = new Date(Number(yyyy), Number(mm) - 1, Number(dd), Number(HH), Number(min));
+                                  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                                  const month = monthNames[dateObj.getMonth()];
+                                  const day = dateObj.getDate();
+                                  
+                                  let suffix = 'th';
+                                  if (day === 1 || day === 21 || day === 31) suffix = 'st';
+                                  else if (day === 2 || day === 22) suffix = 'nd';
+                                  else if (day === 3 || day === 23) suffix = 'rd';
+                                  
+                                  let hours = dateObj.getHours();
+                                  const ampm = hours >= 12 ? 'PM' : 'AM';
+                                  hours = hours % 12;
+                                  hours = hours ? hours : 12; // the hour '0' should be '12'
+                                  const displayStr = `${month} ${day}${suffix} at ${hours}:${min} ${ampm}`;
+                                  
+                                  onCalendarSubmit(msg.id, isoString, displayStr);
+                                }
+                              }}
+                              className="bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 border border-gold-300/30 rounded-full py-2 px-4 font-sans text-xs tracking-wider uppercase transition-colors self-start"
+                            >
+                              Confirm Appointment
+                            </button>
+                          </div>
+                        )}
                         {msg.role === 'assistant' && (
                           <div className="mt-3 w-12 h-[1px] bg-gold-300/30" />
                         )}
