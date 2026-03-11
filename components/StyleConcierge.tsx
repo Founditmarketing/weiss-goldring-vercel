@@ -216,25 +216,14 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     setSessionKey(randomKey);
   }, []);
 
-  // Auto-scroll logic: Bottom for user, Top-aligned (beginning) for assistant
+  // Auto-scroll logic: Always align to the very bottom of the chat
   useEffect(() => {
     if (messages.length > 0 && isOpen) {
-      const isLastMessageAssistant = messages[0].role === 'assistant';
-
       const timer = setTimeout(() => {
-        if (isLastMessageAssistant) {
-          // Align assistant response to show the beginning (start)
-          latestMessageRef.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        } else {
-          // Immediately bring user to the bottom anchor
-          messagesEndRef.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end'
-          });
-        }
+        messagesEndRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end'
+        });
       }, 150);
       return () => clearTimeout(timer);
     }
