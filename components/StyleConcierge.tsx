@@ -711,9 +711,9 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20 w-full px-6 pb-8 shrink-0 bg-[#050E17]/95"
+              className="relative z-20 w-full px-6 py-6 shrink-0 bg-[#091521]/95 border-t border-white/[0.02]"
             >
-              <div className="relative group mt-2">
+              <div className="relative group">
                 <div className="absolute -inset-[1px] bg-gradient-to-r from-gold-300/20 via-white/5 to-gold-300/20 rounded-full blur-sm opacity-70 group-focus-within:opacity-100 transition-opacity duration-1000" />
                 <div className="relative bg-black/80 backdrop-blur-2xl border border-white/20 rounded-full flex items-center p-1 pl-5 pr-1 transition-all duration-500 focus-within:border-gold-300/40">
                   <input
