@@ -107,7 +107,7 @@ export const Footer: React.FC<FooterProps> = ({ onLinkClick, onContactClick }) =
               © {new Date().getFullYear()} Weiss & Goldring. All Rights Reserved.
             </p>
             <button 
-              onClick={() => onLinkClick('privacy')}
+              onClick={() => onLinkClick('#privacy')}
               className="text-gray-500 hover:text-white text-xs font-sans transition-colors"
             >
               Privacy Policy

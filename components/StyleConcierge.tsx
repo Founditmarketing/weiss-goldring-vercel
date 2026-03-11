@@ -99,7 +99,7 @@ const handleConsultationRequest = async (message: string, userKey: string): Prom
   }
 };
 
-export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) => {
+export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy') => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -382,13 +382,17 @@ export const StyleConcierge = ({ isHomePage = true }: { isHomePage?: boolean }) 
             <div className="absolute top-[48px] w-full text-center px-8 z-40">
               <p className="text-[9px] text-white/30 font-sans tracking-wide leading-tight">
                 By messaging, you acknowledge that you have read and agree to our
-                <a 
-                  href="#privacy" 
-                  onClick={() => setIsOpen(false)}
-                  className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50"
+                <button 
+                  onClick={() => {
+                    setIsOpen(false);
+                    if (onNavigate) {
+                      onNavigate('privacy');
+                    }
+                  }}
+                  className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50 inline-block"
                 >
                   Privacy Policy
-                </a>.
+                </button>.
               </p>
             </div>
 
