@@ -572,10 +572,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                   disabled={disabled}
                                   onClick={() => onSend(btn.name)}
                                   className={`
-                                    border rounded-full py-1.5 px-3 font-sans text-[11px] tracking-wide transition-all duration-300 text-left
+                                    border rounded-[14px] py-1.5 px-3 font-sans text-[11.5px] tracking-wide transition-all duration-300 text-left cursor-pointer
                                     ${disabled 
                                       ? 'border-gold-300/10 text-white/20 bg-transparent cursor-not-allowed' 
-                                      : 'border-gold-300/40 text-gold-200 bg-gold-900/10 hover:bg-gold-500/20 hover:border-gold-300'}
+                                      : 'border-gold-300/40 text-white/90 bg-gold-900/10 hover:bg-gold-500/20 hover:border-gold-300'}
                                   `}
                                 >
                                   {btn.name}
