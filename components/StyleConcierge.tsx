@@ -150,10 +150,27 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
 
 export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy') => void }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('voiceflow_chat_history');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) { console.error("Failed to parse chat history", e); }
+      }
+    }
+    return [];
+  });
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [sessionKey, setSessionKey] = useState('');
+  const [sessionKey, setSessionKey] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const storedKey = sessionStorage.getItem('voiceflow_userID');
+      if (storedKey) return storedKey;
+      const newKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      sessionStorage.setItem('voiceflow_userID', newKey);
+      return newKey;
+    }
+    return '';
+  });
   const [isHovered, setIsHovered] = useState(false);
   const [showInitialTooltip, setShowInitialTooltip] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -222,11 +239,12 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     }
   }, [isOpen, messages.length, sessionKey]);
 
-  // Generate session key on mount
+  // Sync messages to session storage whenever they change
   useEffect(() => {
-    const randomKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    setSessionKey(randomKey);
-  }, []);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('voiceflow_chat_history', JSON.stringify(messages));
+    }
+  }, [messages]);
 
   // Auto-scroll logic: Always align to the very bottom of the chat
   useEffect(() => {
