@@ -64,7 +64,7 @@ function App() {
   };
 
   return (
-    <div className="bg-cream min-h-screen selection:bg-gold-300 selection:text-navy-900 font-sans">
+    <div className="bg-cream min-h-screen selection:bg-gold-300 selection:text-navy-900 font-sans overflow-x-hidden relative w-full">
       <Navbar onNavigate={navigateTo} onBookClick={openAppointment} activePage={currentPage} />
 
       <main>
