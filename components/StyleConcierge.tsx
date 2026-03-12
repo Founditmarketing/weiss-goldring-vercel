@@ -688,6 +688,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               ref={scrollContainerRef}
               className={`relative z-10 w-full flex-1 px-6 overflow-y-auto overscroll-contain flex flex-col scrollbar-hide pt-[110px] transition-all duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
               style={{
+                transformOrigin: 'bottom',
                 maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)'
               }}
@@ -917,6 +918,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: 80, opacity: 0 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ transformOrigin: 'bottom' }}
                   className="relative z-20 w-full px-6 py-6 shrink-0 bg-[#091521]/95 border-t border-white/[0.02]"
                 >
                   <div className="relative group">
