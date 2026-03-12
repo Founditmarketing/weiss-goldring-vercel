@@ -4,9 +4,10 @@ import { BRAND_CATEGORIES } from '../constants';
 
 interface MerchandisePageProps {
     onBack: () => void;
+    onNavigate: (page: string) => void;
 }
 
-export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack }) => {
+export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack, onNavigate }) => {
     return (
         <div className="pt-24 pb-12 bg-cream animate-fade-in-up min-h-screen">
             <div className="container mx-auto px-6">
@@ -32,8 +33,19 @@ export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack }) => {
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-8 gap-x-4">
                             {BRAND_CATEGORIES.clothing.map(brand => (
-                                <div key={brand} className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
-                                    {brand}
+                                <div key={brand}>
+                                    {brand.includes('Castangia') ? (
+                                        <button 
+                                            onClick={() => onNavigate('castangia')}
+                                            className="text-gray-600 font-sans hover:text-gold-500 transition-colors cursor-pointer block text-left w-full"
+                                        >
+                                            {brand}
+                                        </button>
+                                    ) : (
+                                        <div className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
+                                            {brand}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -47,8 +59,19 @@ export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack }) => {
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-8 gap-x-4">
                             {BRAND_CATEGORIES.sportswear.map(brand => (
-                                <div key={brand} className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
-                                    {brand}
+                                <div key={brand}>
+                                    {brand.includes('Castangia') ? (
+                                        <button 
+                                            onClick={() => onNavigate('castangia')}
+                                            className="text-gray-600 font-sans hover:text-gold-500 transition-colors cursor-pointer block text-left w-full"
+                                        >
+                                            {brand}
+                                        </button>
+                                    ) : (
+                                        <div className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
+                                            {brand}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -62,8 +85,19 @@ export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack }) => {
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-8 gap-x-4">
                             {BRAND_CATEGORIES.trousers.map(brand => (
-                                <div key={brand} className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
-                                    {brand}
+                                <div key={brand}>
+                                    {brand.includes('Castangia') ? (
+                                        <button 
+                                            onClick={() => onNavigate('castangia')}
+                                            className="text-gray-600 font-sans hover:text-gold-500 transition-colors cursor-pointer block text-left w-full"
+                                        >
+                                            {brand}
+                                        </button>
+                                    ) : (
+                                        <div className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
+                                            {brand}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -77,8 +111,19 @@ export const MerchandisePage: React.FC<MerchandisePageProps> = ({ onBack }) => {
                         </div>
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-8 gap-x-4">
                             {BRAND_CATEGORIES.footwear.concat(BRAND_CATEGORIES.accessories).map(brand => (
-                                <div key={brand} className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
-                                    {brand}
+                                <div key={brand}>
+                                    {brand.includes('Castangia') ? (
+                                        <button 
+                                            onClick={() => onNavigate('castangia')}
+                                            className="text-gray-600 font-sans hover:text-gold-500 transition-colors cursor-pointer block text-left w-full"
+                                        >
+                                            {brand}
+                                        </button>
+                                    ) : (
+                                        <div className="text-gray-600 font-sans hover:text-navy-900 transition-colors cursor-default">
+                                            {brand}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
