@@ -584,9 +584,9 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             dragListener={false}
             dragMomentum={false}
             style={isFloating ? { x: dragX, y: dragY } : undefined}
-            initial={isFloating ? { scale: 0.9, opacity: 0 } : { opacity: 0, x: "100%" }}
-            animate={isFloating ? { scale: 1, opacity: 1 } : { opacity: 1, x: 0 }}
-            exit={isFloating ? { scale: 0.9, opacity: 0 } : { opacity: 0, x: "100%" }}
+            initial={{ opacity: 0, x: isFloating ? 0 : "100%", scale: isFloating ? 0.9 : 1 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: isFloating ? 0 : "100%", scale: isFloating ? 0.9 : 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className={`fixed z-[100] flex flex-col overflow-hidden backdrop-blur-xl transition-[width,height,bottom,right,border-radius] duration-500 bg-[#091521]/95 border-gold-300/20 shadow-2xl ${
               isFloating
@@ -855,7 +855,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 >
                   <button
                     onClick={() => setIsFloating(!isFloating)}
-                    className="w-10 h-10 bg-gold-500 hover:bg-gold-400 text-black rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-transform hover:scale-105 group relative"
+                    className="w-10 h-10 bg-black/60 border border-gold-300/30 hover:border-gold-300/60 hover:bg-gold-900/20 text-gold-300 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-300 group relative"
                   >
                     {isFloating ? <PanelRight className="w-5 h-5" /> : <PictureInPicture className="w-5 h-5" />}
                     
