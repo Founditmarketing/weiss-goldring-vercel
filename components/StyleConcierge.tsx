@@ -610,7 +610,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             dragControls={dragControls}
             dragListener={false}
             dragMomentum={false}
-            style={isFloating ? { x: dragX, y: dragY } : undefined}
+            style={{ 
+              transformOrigin: '100% 100%',
+              ...(isFloating ? { x: dragX, y: dragY } : {}) 
+            }}
             initial={{ opacity: 0, x: isFloating ? 0 : "100%", scale: isFloating ? 0.9 : 1 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: isFloating ? 0 : "100%", scale: isFloating ? 0.9 : 1 }}
