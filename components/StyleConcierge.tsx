@@ -486,7 +486,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-0 right-0 z-[100] w-full sm:w-[450px] h-[100dvh] bg-[#091521]/95 border-l border-gold-300/20 shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
             
             {/* Very faint, elegant vertical pinstripe background (Sartorial luxury) */}
