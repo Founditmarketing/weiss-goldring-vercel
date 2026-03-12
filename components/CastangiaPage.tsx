@@ -60,7 +60,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
   ];
 
   return (
-    <div className="bg-cream min-h-screen pt-32 pb-24">
+    <div className="pt-24 pb-12 bg-cream animate-fade-in-up min-h-screen">
       <div className="container mx-auto px-6">
         <div className="mb-8">
           <Button variant="text" onClick={onBack} className="pl-0 mb-4">← Back to Home</Button>
