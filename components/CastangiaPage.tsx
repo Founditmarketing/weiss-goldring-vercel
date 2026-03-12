@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ArrowLeft from 'lucide-react/dist/esm/icons/arrow-left';
+import { Button } from './Button';
 
 interface CastangiaPageProps {
   onBack: () => void;
@@ -60,8 +61,11 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
 
   return (
     <div className="bg-cream min-h-screen pt-32 pb-24">
-
-
+      <div className="container mx-auto px-6">
+        <div className="mb-8">
+          <Button variant="text" onClick={onBack} className="pl-0 mb-4">← Back to Home</Button>
+        </div>
+      </div>
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 text-center mb-24">
         <motion.div
