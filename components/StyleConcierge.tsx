@@ -4,8 +4,8 @@ import Send from 'lucide-react/dist/esm/icons/send';
 import X from 'lucide-react/dist/esm/icons/x';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
 import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
-import PictureInPicture from 'lucide-react/dist/esm/icons/picture-in-picture';
-import PanelRight from 'lucide-react/dist/esm/icons/panel-right';
+import Minimize2 from 'lucide-react/dist/esm/icons/minimize-2';
+import Maximize2 from 'lucide-react/dist/esm/icons/maximize-2';
 
 interface Message {
   id: string;
@@ -588,7 +588,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: isFloating ? 0 : "100%", scale: isFloating ? 0.9 : 1 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className={`fixed z-[100] flex flex-col overflow-hidden backdrop-blur-xl transition-[width,height,bottom,right,border-radius] duration-500 bg-[#091521]/95 border-gold-300/20 shadow-2xl ${
+            className={`fixed z-[100] flex flex-col overflow-hidden backdrop-blur-xl bg-[#091521]/95 border-gold-300/20 shadow-2xl ${
               isFloating
                 ? 'w-[90vw] sm:w-[400px] h-[75vh] sm:h-[600px] bottom-6 sm:bottom-10 right-6 sm:right-10 rounded-2xl border'
                 : 'top-0 right-0 w-full sm:w-[450px] h-[100dvh] rounded-none border-l'
@@ -857,7 +857,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                     onClick={() => setIsFloating(!isFloating)}
                     className="w-10 h-10 bg-black/60 border border-gold-300/30 hover:border-gold-300/60 hover:bg-gold-900/20 text-gold-300 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-300 group relative"
                   >
-                    {isFloating ? <PanelRight className="w-5 h-5" /> : <PictureInPicture className="w-5 h-5" />}
+                    {isFloating ? <Maximize2 className="w-5 h-5" /> : <Minimize2 className="w-5 h-5" />}
                     
                     {/* Tooltip */}
                     <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-[#050E17]/90 border border-gold-300/20 text-gold-300/90 text-[10px] uppercase tracking-wider px-3 py-1.5 rounded whitespace-nowrap pointer-events-none transition-opacity">
