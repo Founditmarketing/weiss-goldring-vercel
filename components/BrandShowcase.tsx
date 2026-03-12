@@ -3,7 +3,11 @@ import { BRANDS } from '../constants';
 import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right';
 import { ScrollReveal } from './ScrollReveal';
 
-export const BrandShowcase: React.FC = () => {
+interface BrandShowcaseProps {
+  onNavigate?: (page: string) => void;
+}
+
+export const BrandShowcase: React.FC<BrandShowcaseProps> = ({ onNavigate }) => {
   return (
     <section id="brands" className="py-24 bg-white">
       <div className="container mx-auto px-6">
@@ -17,7 +21,11 @@ export const BrandShowcase: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[800px]">
           {/* Main Feature - Castangia */}
-          <ScrollReveal className="h-[500px] md:h-full md:col-span-8 md:row-span-2 relative group overflow-hidden cursor-pointer rounded-sm" width="100%">
+          <ScrollReveal 
+            className="h-[500px] md:h-full md:col-span-8 md:row-span-2 relative group overflow-hidden cursor-pointer rounded-sm" 
+            width="100%"
+            onClick={() => onNavigate && onNavigate('castangia')}
+          >
             <img
               src={BRANDS[0].imageUrl}
               alt={BRANDS[0].name}

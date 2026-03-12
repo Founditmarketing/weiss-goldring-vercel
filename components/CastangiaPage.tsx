@@ -4,9 +4,10 @@ import ArrowLeft from 'lucide-react/dist/esm/icons/arrow-left';
 
 interface CastangiaPageProps {
   onBack: () => void;
+  onNavigate: (page: string) => void;
 }
 
-export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack }) => {
+export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate }) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -17,50 +18,49 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack }) => {
   const suits = [
     {
       id: 'cst-01',
-      title: 'Charcoal Super 130\'s Peak Lapel Suit',
-      material: "Super 130's Wool",
-      description: 'A masterpiece of Neapolitan tailoring, featuring a decisive peak lapel and half-canvas construction for unparalleled drape.'
+      title: 'Grey Sharkskin Suit',
+      material: "Super 130's Sharkskin (Wool)",
+      description: 'Command attention with the subtle texture and timeless elegance of sharkskin. Crafted from premium Super 130\'s wool for a sophisticated grey hue.',
+      imageUrl: '/cas-grey-47667.jpg',
+      hoverImageUrl: '/cas-grey-47667-details.jpg'
     },
     {
       id: 'cst-02',
-      title: 'Navy Pinstripe Executive Suit',
-      material: "Super 130's Wool",
-      description: 'Commanding and elegant. Woven in Biella, Italy, this soft-shouldered suit embodies the pinnacle of board-room sophistication.'
+      title: 'Navy Blazer',
+      material: "Super 130's 100% Wool",
+      description: 'A staple for the modern gentleman\'s wardrobe, featuring unparalleled drape and a lightweight feel.',
+      imageUrl: '/cas-blazer-48319.jpg',
+      hoverImageUrl: '/cas-blazer-48319-details.jpg'
     },
     {
       id: 'cst-03',
-      title: 'Midnight Blue Wool Tuxedo',
-      material: "Super 130's Wool with Silk Faille",
-      description: 'The ultimate expression of formal prestige. Accented with pure silk faille lapels for a softer, more luxurious luster than traditional satin.'
+      title: 'Navy Suit',
+      material: "Super 130's Wool",
+      description: 'The cornerstone of classic menswear, featuring unparalleled Italian construction and the luxurious touch of Super 130\'s wool.',
+      imageUrl: '/cas-navy-13479.jpg',
+      hoverImageUrl: '/cas-navy-13479-details.jpg'
     },
     {
       id: 'cst-04',
-      title: 'Heather Gray Birdseye Suit',
+      title: 'Black Suit',
       material: "Super 130's Wool",
-      description: 'A versatile three-season staple. The intricate birdseye weave provides remarkable depth of color and exceptional wrinkle resistance.'
+      description: 'Sleek, powerful, and undeniably elegant. A masterful silhouette cut from ultra-fine Super 130\'s wool for evening events.',
+      imageUrl: '/cas-black-49338.jpg',
+      hoverImageUrl: '/cas-black-49338-details.jpg'
     },
     {
       id: 'cst-05',
-      title: 'Espresso Brown Houndstooth Blazer',
-      material: "Super 130's Wool & Silk Blend",
-      description: 'A striking statement piece featuring a subtle macro-houndstooth pattern, unlined for effortless layering and breathability.'
+      title: 'Tuxedo',
+      material: "Super 130's Wool",
+      description: 'Black tie perfection. Arrive in uncompromising style with this Castangia tuxedo for your next gala or formal event.',
+      imageUrl: '/cas-tux-13479.jpg',
+      hoverImageUrl: '/cas-tux-13479-details.jpg'
     }
   ];
 
   return (
     <div className="bg-cream min-h-screen pt-32 pb-24">
-      {/* Refined Back Button */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 mb-12">
-        <button 
-          onClick={onBack}
-          className="group flex items-center gap-3 text-navy-800 hover:text-gold-500 transition-colors duration-300"
-        >
-          <div className="w-10 h-10 rounded-full border border-navy-200 group-hover:border-gold-300 flex items-center justify-center transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </div>
-          <span className="font-sans text-[11px] uppercase tracking-[0.2em] font-medium">Return</span>
-        </button>
-      </div>
+
 
       {/* Hero Section */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 text-center mb-24">
@@ -88,19 +88,33 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack }) => {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 30 }}
               transition={{ duration: 0.8, delay: 0.2 + (index * 0.1), ease: "easeOut" }}
+              onClick={() => {
+                if (suit.id === 'cst-01') { 
+                  onNavigate('castangia-sharkskin');
+                } else if (suit.id === 'cst-02') { 
+                  onNavigate('castangia-blazer');
+                } else if (suit.id === 'cst-03') {
+                  onNavigate('castangia-navy-suit');
+                } else if (suit.id === 'cst-04') {
+                  onNavigate('castangia-black-suit');
+                } else if (suit.id === 'cst-05') {
+                  onNavigate('castangia-tuxedo');
+                }
+              }}
               className="group cursor-pointer flex flex-col"
             >
-              {/* Image Placeholder */}
-              <div className="w-full aspect-[3/4] bg-white border border-navy-100 mb-8 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500 flex items-center justify-center">
-                <div className="absolute inset-0 bg-navy-900/0 group-hover:bg-navy-900/5 transition-colors duration-500 z-10" />
-                <span className="font-sans text-[10px] tracking-[0.3em] uppercase text-navy-800/30">
-                  Image Coming Soon
-                </span>
-                
-                {/* Subtle overlay logo for placeholder texture */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.03]">
-                  <span className="font-serif italic text-6xl">C</span>
-                </div>
+              {/* Image Transition View */}
+              <div className="w-full aspect-[3/4] bg-white border border-navy-100 mb-8 overflow-hidden relative shadow-sm group-hover:shadow-xl transition-all duration-500">
+                <img 
+                  src={suit.imageUrl} 
+                  alt={suit.title} 
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100 group-hover:opacity-0"
+                />
+                <img 
+                  src={suit.hoverImageUrl} 
+                  alt={`${suit.title} Details`} 
+                  className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-0 group-hover:opacity-100"
+                />
               </div>
 
               {/* Product Info */}

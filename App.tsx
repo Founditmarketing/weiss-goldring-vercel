@@ -13,8 +13,13 @@ import { Services } from './components/Services';
 import { StyleConcierge } from './components/StyleConcierge';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { CastangiaPage } from './components/CastangiaPage';
+import { CastangiaBlazerPage } from './components/CastangiaBlazerPage';
+import { CastangiaSharkskinSuitPage } from './components/CastangiaSharkskinSuitPage';
+import { CastangiaNavySuitPage } from './components/CastangiaNavySuitPage';
+import { CastangiaBlackSuitPage } from './components/CastangiaBlackSuitPage';
+import { CastangiaTuxedoPage } from './components/CastangiaTuxedoPage';
 
-type Page = 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia';
+type Page = 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia' | 'castangia-blazer' | 'castangia-sharkskin' | 'castangia-navy-suit' | 'castangia-black-suit' | 'castangia-tuxedo';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -46,6 +51,11 @@ function App() {
   else if (location.pathname === '/brands') activePage = 'brands';
   else if (location.pathname === '/privacy') activePage = 'privacy';
   else if (location.pathname === '/castangia') activePage = 'castangia';
+  else if (location.pathname === '/product/castangia-navy-blazer') activePage = 'castangia-blazer';
+  else if (location.pathname === '/product/castangia-grey-sharkskin-suit') activePage = 'castangia-sharkskin';
+  else if (location.pathname === '/product/castangia-navy-suit') activePage = 'castangia-navy-suit';
+  else if (location.pathname === '/product/castangia-black-suit') activePage = 'castangia-black-suit';
+  else if (location.pathname === '/product/castangia-tuxedo') activePage = 'castangia-tuxedo';
 
   const openAppointment = () => setIsAppointmentOpen(true);
   const closeAppointment = () => setIsAppointmentOpen(false);
@@ -73,6 +83,11 @@ function App() {
       return;
     }
     if (page === 'home') navigate('/');
+    else if (page === 'castangia-blazer') navigate('/product/castangia-navy-blazer');
+    else if (page === 'castangia-sharkskin') navigate('/product/castangia-grey-sharkskin-suit');
+    else if (page === 'castangia-navy-suit') navigate('/product/castangia-navy-suit');
+    else if (page === 'castangia-black-suit') navigate('/product/castangia-black-suit');
+    else if (page === 'castangia-tuxedo') navigate('/product/castangia-tuxedo');
     else navigate(`/${page}`);
   };
 
@@ -94,7 +109,7 @@ function App() {
           <Route path="/" element={
             <>
               <Hero onExplore={() => navigateTo('brands')} />
-              <BrandShowcase />
+              <BrandShowcase onNavigate={navigateTo} />
               <Services />
               <MeetTed onBook={openAppointment} />
               <Testimonials />
@@ -103,7 +118,12 @@ function App() {
           <Route path="/heritage" element={<HeritagePage onBack={() => navigateTo('home')} />} />
           <Route path="/brands" element={<MerchandisePage onBack={() => navigateTo('home')} />} />
           <Route path="/privacy" element={<PrivacyPolicy onBack={() => navigateTo('home')} />} />
-          <Route path="/castangia" element={<CastangiaPage onBack={() => navigateTo('home')} />} />
+          <Route path="/castangia" element={<CastangiaPage onBack={() => navigateTo('home')} onNavigate={navigateTo} />} />
+          <Route path="/product/castangia-navy-blazer" element={<CastangiaBlazerPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
+          <Route path="/product/castangia-grey-sharkskin-suit" element={<CastangiaSharkskinSuitPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
+          <Route path="/product/castangia-navy-suit" element={<CastangiaNavySuitPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
+          <Route path="/product/castangia-black-suit" element={<CastangiaBlackSuitPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
+          <Route path="/product/castangia-tuxedo" element={<CastangiaTuxedoPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
           <Route path="*" element={<Hero onExplore={() => navigateTo('brands')} />} />
         </Routes>
       </main>
