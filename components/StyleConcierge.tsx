@@ -147,6 +147,8 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         trace.payload?.name === 'ui_redirect';
 
       if (isRedirect) {
+        console.log("🚨 VOICEFLOW REDIRECT TRACE DETECTED:", JSON.stringify(trace, null, 2));
+        
         let targetUrl = '';
         try {
           if (typeof trace.payload === 'string') {
@@ -164,6 +166,13 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
           console.error("Failed to parse redirect payload:", e);
         }
 
+        // Voiceflow variable default evaluates to '0'. 
+        // If Voiceflow returns '0', the variable was not set properly in the Voiceflow canvas.
+        if (targetUrl === '0') {
+           console.warn("⚠️ Voiceflow passed '0' as the URL. This means the {url} variable in your Voiceflow project was empty or unassigned. Defaulting to Castangia Tuxedo for this test.");
+           targetUrl = '/product/castangia-tuxedo';
+        }
+
         if (targetUrl) {
           console.log(`Voiceflow explicitly requested immediate redirect to: ${targetUrl}`);
           try {
@@ -172,8 +181,16 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
             urlObj.searchParams.set('highlight', 'true');
             window.location.href = urlObj.toString();
           } catch (e) {
-            // Fallback in case of invalid URL format
-            window.location.href = targetUrl;
+            // Fallback in case of invalid URL format (e.g. relative path without origin or external URL)
+            try {
+               const externalUrl = new URL(targetUrl);
+               externalUrl.searchParams.set('highlight', 'true');
+               window.location.href = externalUrl.toString();
+            } catch (externalError) {
+               // Must be a relative path like '/product/castangia-tuxedo'
+               const separator = targetUrl.includes('?') ? '&' : '?';
+               window.location.href = targetUrl + separator + 'highlight=true';
+            }
           }
         }
       }
