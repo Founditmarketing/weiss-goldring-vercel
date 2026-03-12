@@ -720,8 +720,8 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                       <div className="flex flex-col">
                         <div className={`
                           ${msg.role === 'assistant'
-                            ? 'font-serif font-normal text-[17px] sm:text-[19px] text-white/90 leading-snug italic'
-                            : 'font-sans text-[11px] sm:text-[12px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3 leading-normal'
+                            ? 'font-serif font-normal text-[19px] sm:text-[19px] text-white/90 leading-snug italic'
+                            : 'font-sans text-[12px] sm:text-[12px] tracking-[0.15em] uppercase text-gold-300/70 border-r border-gold-300/20 pr-3 leading-normal'
                           }
                           whitespace-pre-line
                         `}>
