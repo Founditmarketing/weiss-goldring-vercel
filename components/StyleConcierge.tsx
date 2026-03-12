@@ -139,21 +139,23 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       // Check for Custom Action: redirect
       const isRedirect =
         trace.type === 'redirect' ||
+        trace.type === 'ext_ui_redirect' ||
         (trace.type === 'custom_action' && trace.payload?.name === 'redirect') ||
         (trace.type === 'Custom' && trace.payload?.name === 'redirect') ||
         trace.payload?.action === 'redirect' ||
-        trace.payload?.name === 'redirect';
+        trace.payload?.name === 'redirect' ||
+        trace.payload?.name === 'ui_redirect';
 
       if (isRedirect) {
         let targetUrl = '';
         try {
           if (typeof trace.payload === 'string') {
             const parsed = JSON.parse(trace.payload);
-            targetUrl = parsed.url;
+            targetUrl = parsed.url || parsed.payload?.url;
           } else if (typeof trace.payload === 'object' && trace.payload !== null) {
-            if (trace.payload.url) {
-              targetUrl = trace.payload.url;
-            } else if (typeof trace.payload.payload === 'string') {
+            targetUrl = trace.payload.url || trace.payload.payload?.url;
+            
+            if (!targetUrl && typeof trace.payload.payload === 'string') {
               const nestedParsed = JSON.parse(trace.payload.payload);
               targetUrl = nestedParsed.url;
             }
@@ -163,10 +165,8 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         }
 
         if (targetUrl) {
-          console.log(`Voiceflow explicitly requested delayed redirect to: ${targetUrl}`);
-          setTimeout(() => {
-            window.location.href = targetUrl;
-          }, 2500);
+          console.log(`Voiceflow explicitly requested immediate redirect to: ${targetUrl}`);
+          window.location.href = targetUrl;
         }
       }
 
