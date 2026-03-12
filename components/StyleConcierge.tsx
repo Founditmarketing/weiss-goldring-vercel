@@ -761,8 +761,8 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                         disabled={!input.trim() || isTyping}
                         className="group ml-2"
                       >
-                        <div className="w-9 h-9 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-all duration-500 group-disabled:opacity-20">
-                          <Send className="w-4 h-4 text-gold-300 group-hover:text-black transition-colors" />
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ${(!input.trim() || isTyping) ? 'bg-white/5 opacity-30' : 'bg-gold-500 hover:bg-gold-400 cursor-pointer shadow-[0_0_10px_rgba(212,175,55,0.3)]'}`}>
+                          <Send className={`w-4 h-4 transition-colors ${(!input.trim() || isTyping) ? 'text-white' : 'text-black'}`} />
                         </div>
                       </button>
                     </div>
