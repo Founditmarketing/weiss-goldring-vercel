@@ -606,7 +606,8 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             {/* Header Title */}
             <div 
               onPointerDown={(e) => isFloating && dragControls.start(e)}
-              className={`absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent ${isFloating ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'}`}
+              style={{ touchAction: 'none' }}
+              className={`absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent ${isFloating ? 'cursor-grab active:cursor-grabbing touch-none' : 'pointer-events-none'}`}
             >
               <span className="font-serif italic text-gold-300/90 text-[19px] pointer-events-none">Personal Concierge</span>
             </div>
@@ -648,7 +649,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className={`relative z-10 w-full flex-1 px-6 overflow-y-auto flex flex-col scrollbar-hide pt-[110px] transition-all duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
+              className={`relative z-10 w-full flex-1 px-6 overflow-y-auto overscroll-contain flex flex-col scrollbar-hide pt-[110px] transition-all duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
               style={{
                 maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)',
                 WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)'
