@@ -614,9 +614,6 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                         )}
                         {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
                           <div className="mt-4 flex flex-col gap-3">
-                            <span className="text-[10px] sm:text-[11px] font-sans tracking-wide text-white/50 px-1 -mb-1">
-                              Appointments: Mon-Fri 10AM-6PM, Sat 10AM-5PM
-                            </span>
                             <div className="relative w-full">
                               <input
                                 type="datetime-local"
@@ -641,6 +638,14 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                               >
                                 <CalendarIcon className="w-4 h-4" />
                               </button>
+                            </div>
+                            <div className="flex flex-col gap-1 px-1 -mt-1 text-white/50">
+                              <span className="text-[10px] sm:text-[11px] font-sans tracking-wide">
+                                Appointments: Mon-Fri 10AM-6PM, Sat 10AM-5PM
+                              </span>
+                              <span className="text-[10px] sm:text-[11px] font-sans tracking-wide italic">
+                                (Only book in 30-minute intervals)
+                              </span>
                             </div>
                             <button
                               onClick={() => {
