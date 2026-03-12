@@ -69,9 +69,9 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
           animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
+          <span className="text-gold-500 font-sans text-xs tracking-[0.3em] uppercase mb-4 block">Castangia</span>
           <h1 className="font-serif text-5xl md:text-6xl text-navy-900 mb-8 leading-[1.1]">
-            <span className="italic block mb-2 text-gold-500">Castangia</span>
-            The Pinnacle of Italian Craftsmanship,<br/>Now In Stock.
+            The Pinnacle of Italian Craftsmanship
           </h1>
           <p className="font-sans text-[15px] md:text-[17px] text-navy-800/70 max-w-2xl mx-auto tracking-wide leading-relaxed">
             Explore our curated selection of Super 130's wool suits, blazers, and formalwear. Each garment is a testament to over a century of uncompromising sartorial excellence.
