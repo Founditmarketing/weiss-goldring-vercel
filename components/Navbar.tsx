@@ -82,23 +82,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookClick, onNavigate, activeP
       </div>
 
       {/* Mobile Menu */}
-      <div className={`absolute top-full left-0 w-full bg-cream shadow-xl py-8 flex flex-col items-center gap-6 md:hidden h-screen transition-all duration-300 ease-in-out transform ${isMobileMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+      <div 
+        className={`fixed inset-0 bg-cream w-full h-[100dvh] flex flex-col items-center justify-center gap-8 md:hidden transition-all duration-300 ease-in-out transform -z-10 pt-20 ${
+          isMobileMenuOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'
+        }`}
+      >
         {links.map((link) => (
           <button
             key={link.name}
             onClick={() => { onNavigate(link.page); setIsMobileMenuOpen(false); }}
-            className={`text-sm font-sans uppercase tracking-widest hover:text-gold-500 ${activePage === link.page ? 'text-gold-500' : 'text-navy-900'}`}
+            className={`text-lg font-sans uppercase tracking-widest hover:text-gold-500 transition-colors ${activePage === link.page ? 'text-gold-500' : 'text-navy-900'}`}
             tabIndex={isMobileMenuOpen ? 0 : -1}
           >
             {link.name}
           </button>
         ))}
-        <Button
-          onClick={() => { onBookClick(); setIsMobileMenuOpen(false); }}
-          tabIndex={isMobileMenuOpen ? 0 : -1}
-        >
-          Book Appointment
-        </Button>
+        <div className="mt-4">
+          <Button
+            onClick={() => { onBookClick(); setIsMobileMenuOpen(false); }}
+            tabIndex={isMobileMenuOpen ? 0 : -1}
+          >
+            Book Appointment
+          </Button>
+        </div>
       </div>
     </nav>
   );
