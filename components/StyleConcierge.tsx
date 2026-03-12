@@ -622,23 +622,25 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               <X className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
             </motion.button>
 
-            {/* Privacy Disclaimer Notice */}
-            <div className="absolute top-[56px] w-full text-center px-8 z-40">
-              <p className="text-[10px] text-white/30 font-sans tracking-wide leading-tight">
-                By messaging, you acknowledge that you have read and agree to our
-                <button 
-                  onClick={() => {
-                    setIsOpen(false);
-                    if (onNavigate) {
-                      onNavigate('privacy');
-                    }
-                  }}
-                  className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50 inline-block"
-                >
-                  Privacy Policy
-                </button>.
-              </p>
-            </div>
+            {/* Privacy Disclaimer Notice (Sidebar Mode) */}
+            {!isFloating && (
+              <div className="absolute top-[56px] w-full text-center px-8 z-40">
+                <p className="text-[10px] text-white/30 font-sans tracking-wide leading-tight">
+                  By messaging, you acknowledge that you have read and agree to our
+                  <button 
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onNavigate) {
+                        onNavigate('privacy');
+                      }
+                    }}
+                    className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50 inline-block"
+                  >
+                    Privacy Policy
+                  </button>.
+                </p>
+              </div>
+            )}
 
             {/* Message Area */}
             <motion.div
@@ -900,6 +902,26 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                       </button>
                     </div>
                   </div>
+                  
+                  {/* Privacy Disclaimer Notice (Floating Mode) */}
+                  {isFloating && (
+                    <div className="w-full text-center mt-3">
+                      <p className="text-[9px] text-white/30 font-sans tracking-wide leading-tight">
+                        By messaging, you agree to our
+                        <button 
+                          onClick={() => {
+                            setIsOpen(false);
+                            if (onNavigate) {
+                              onNavigate('privacy');
+                            }
+                          }}
+                          className="text-gold-300/70 hover:text-gold-300 ml-1 underline underline-offset-2 transition-colors pointer-events-auto cursor-pointer relative z-50 inline-block"
+                        >
+                          Privacy Policy
+                        </button>.
+                      </p>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
