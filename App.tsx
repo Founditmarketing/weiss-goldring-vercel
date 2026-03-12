@@ -12,8 +12,9 @@ import { MerchandisePage } from './components/MerchandisePage';
 import { Services } from './components/Services';
 import { StyleConcierge } from './components/StyleConcierge';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { CastangiaPage } from './components/CastangiaPage';
 
-type Page = 'home' | 'heritage' | 'brands' | 'ted' | 'privacy';
+type Page = 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -44,6 +45,7 @@ function App() {
   if (location.pathname === '/heritage') activePage = 'heritage';
   else if (location.pathname === '/brands') activePage = 'brands';
   else if (location.pathname === '/privacy') activePage = 'privacy';
+  else if (location.pathname === '/castangia') activePage = 'castangia';
 
   const openAppointment = () => setIsAppointmentOpen(true);
   const closeAppointment = () => setIsAppointmentOpen(false);
@@ -101,6 +103,7 @@ function App() {
           <Route path="/heritage" element={<HeritagePage onBack={() => navigateTo('home')} />} />
           <Route path="/brands" element={<MerchandisePage onBack={() => navigateTo('home')} />} />
           <Route path="/privacy" element={<PrivacyPolicy onBack={() => navigateTo('home')} />} />
+          <Route path="/castangia" element={<CastangiaPage onBack={() => navigateTo('home')} />} />
           <Route path="*" element={<Hero onExplore={() => navigateTo('brands')} />} />
         </Routes>
       </main>
