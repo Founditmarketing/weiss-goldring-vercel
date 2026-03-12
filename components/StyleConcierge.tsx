@@ -299,6 +299,19 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     return () => clearTimeout(timer);
   }, []);
 
+  // Auto-open chat widget if redirected with highlight parameter
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('highlight') === 'true') {
+        const timer = setTimeout(() => {
+          setIsOpen(true);
+        }, 800);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
   // Sequence initial greeting from Voiceflow
   useEffect(() => {
     if (isOpen && messages.length === 0 && sessionKey) {
