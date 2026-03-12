@@ -341,7 +341,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       }, 150);
       return () => clearTimeout(timer);
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isFloating]);
 
   // Draggable Window Logic
   const dragControls = useDragControls();
@@ -853,7 +853,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className={`absolute right-6 z-50 transition-all duration-500 ${isInputHidden ? 'bottom-8' : 'bottom-[100px]'}`}
+                  className={`absolute right-6 z-50 transition-all duration-500 ${isInputHidden ? 'bottom-8' : 'bottom-[120px]'}`}
                 >
                   <button
                     onClick={() => setIsFloating(!isFloating)}
