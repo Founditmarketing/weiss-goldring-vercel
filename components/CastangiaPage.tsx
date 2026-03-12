@@ -20,7 +20,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
     {
       id: 'cst-01',
       title: 'Grey Sharkskin Suit',
-      material: "Super 130's Sharkskin (Wool)",
+      material: "Super 180's Sharkskin (Wool)",
       description: 'Command attention with the subtle texture and timeless elegance of sharkskin. Crafted from premium Super 130\'s wool for a sophisticated grey hue.',
       imageUrl: '/cas-grey-47667.jpg',
       hoverImageUrl: '/cas-grey-47667-details.jpg'
@@ -28,7 +28,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
     {
       id: 'cst-02',
       title: 'Navy Blazer',
-      material: "Super 130's 100% Wool",
+      material: "Super 180's 100% Wool",
       description: 'A staple for the modern gentleman\'s wardrobe, featuring unparalleled drape and a lightweight feel.',
       imageUrl: '/cas-blazer-48319.jpg',
       hoverImageUrl: '/cas-blazer-48319-details.jpg'
@@ -36,7 +36,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
     {
       id: 'cst-03',
       title: 'Navy Suit',
-      material: "Super 130's Wool",
+      material: "Super 180's Wool",
       description: 'The cornerstone of classic menswear, featuring unparalleled Italian construction and the luxurious touch of Super 130\'s wool.',
       imageUrl: '/cas-navy-13479.jpg',
       hoverImageUrl: '/cas-navy-13479-details.jpg'
@@ -44,7 +44,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
     {
       id: 'cst-04',
       title: 'Black Suit',
-      material: "Super 130's Wool",
+      material: "Super 180's Wool",
       description: 'Sleek, powerful, and undeniably elegant. A masterful silhouette cut from ultra-fine Super 130\'s wool for evening events.',
       imageUrl: '/cas-black-49338.jpg',
       hoverImageUrl: '/cas-black-49338-details.jpg'
@@ -52,7 +52,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
     {
       id: 'cst-05',
       title: 'Tuxedo',
-      material: "Super 130's Wool",
+      material: "Super 180's Wool",
       description: 'Black tie perfection. Arrive in uncompromising style with this Castangia tuxedo for your next gala or formal event.',
       imageUrl: '/cas-tux-13479.jpg',
       hoverImageUrl: '/cas-tux-13479-details.jpg'
@@ -78,7 +78,7 @@ export const CastangiaPage: React.FC<CastangiaPageProps> = ({ onBack, onNavigate
             The Pinnacle of Italian Craftsmanship
           </h1>
           <p className="font-sans text-[15px] md:text-[17px] text-navy-800/70 max-w-2xl mx-auto tracking-wide leading-relaxed">
-            Explore our curated selection of Super 130's wool suits, blazers, and formalwear. Each garment is a testament to over a century of uncompromising sartorial excellence.
+            Explore our curated selection of Super 180's wool suits, blazers, and formalwear. Each garment is a testament to over a century of uncompromising sartorial excellence.
           </p>
         </motion.div>
       </section>

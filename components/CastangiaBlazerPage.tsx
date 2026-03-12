@@ -14,7 +14,7 @@ export const CastangiaBlazerPage: React.FC<CastangiaBlazerPageProps> = ({ onBack
 
   // Hidden tags for potential backend/search use
   const productTags = [
-    'Castangia', 'Blazer', 'Navy', 'Super 130s', 'Wool', 'Sportcoat', 'Business Casual', 'Y211'
+    'Castangia', 'Blazer', 'Navy', 'Super 180s', 'Wool', 'Sportcoat', 'Business Casual', 'Y211'
   ];
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export const CastangiaBlazerPage: React.FC<CastangiaBlazerPageProps> = ({ onBack
                 Navy Blazer
               </h1>
               <p className="font-sans text-[13px] tracking-wide text-navy-800/60 uppercase">
-                Super 130's 100% Wool
+                Super 180's 100% Wool
               </p>
             </div>
 
             <div className="prose prose-sm max-w-none text-navy-800/80 mb-10">
               <p className="font-sans text-[15px] leading-relaxed">
-                A staple for the modern gentleman's wardrobe. This Castangia blazer is expertly tailored from Super 130's 100% wool, offering unparalleled drape and a lightweight feel. Perfect for transitioning from boardroom meetings to evening dinners.
+                A staple for the modern gentleman's wardrobe. This Castangia blazer is expertly tailored from Super 180's 100% wool, offering unparalleled drape and a lightweight feel. Perfect for transitioning from boardroom meetings to evening dinners.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export const CastangiaBlazerPage: React.FC<CastangiaBlazerPageProps> = ({ onBack
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Fabric</span>
-                  <span>Super 130's 100% Wool</span>
+                  <span>Super 180's 100% Wool</span>
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Model</span>

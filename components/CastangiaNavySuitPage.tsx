@@ -14,7 +14,7 @@ export const CastangiaNavySuitPage: React.FC<CastangiaNavySuitPageProps> = ({ on
 
   // Hidden tags for potential backend/search use
   const productTags = [
-    'Castangia', 'Suit', 'Navy', 'Super 130s', 'Wool', 'Business', 'Formal', 'YZ11/133'
+    'Castangia', 'Suit', 'Navy', 'Super 180s', 'Wool', 'Business', 'Formal', 'YZ11/133'
   ];
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export const CastangiaNavySuitPage: React.FC<CastangiaNavySuitPageProps> = ({ on
                 Navy Suit
               </h1>
               <p className="font-sans text-[13px] tracking-wide text-navy-800/60 uppercase">
-                Super 130's Wool
+                Super 180's Wool
               </p>
             </div>
 
             <div className="prose prose-sm max-w-none text-navy-800/80 mb-10">
               <p className="font-sans text-[15px] leading-relaxed">
-                The cornerstone of classic menswear. This quintessential navy suit by Castangia features unparalleled Italian construction and the luxurious touch of Super 130's wool, ensuring you look sharp in any professional or formal setting.
+                The cornerstone of classic menswear. This quintessential navy suit by Castangia features unparalleled Italian construction and the luxurious touch of Super 180's wool, ensuring you look sharp in any professional or formal setting.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export const CastangiaNavySuitPage: React.FC<CastangiaNavySuitPageProps> = ({ on
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Fabric</span>
-                  <span>Super 130's Wool</span>
+                  <span>Super 180's Wool</span>
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Model</span>

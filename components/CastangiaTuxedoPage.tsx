@@ -14,7 +14,7 @@ export const CastangiaTuxedoPage: React.FC<CastangiaTuxedoPageProps> = ({ onBack
 
   // Hidden tags for potential backend/search use
   const productTags = [
-    'Castangia', 'Tuxedo', 'Black Tie', 'Formalwear', 'Super 130s', 'Wool', 'Wedding', 'Gala', 'Y711/133'
+    'Castangia', 'Tuxedo', 'Black Tie', 'Formalwear', 'Super 180s', 'Wool', 'Wedding', 'Gala', 'Y711/133'
   ];
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export const CastangiaTuxedoPage: React.FC<CastangiaTuxedoPageProps> = ({ onBack
                 Tuxedo
               </h1>
               <p className="font-sans text-[13px] tracking-wide text-navy-800/60 uppercase">
-                Super 130's Wool
+                Super 180's Wool
               </p>
             </div>
 
             <div className="prose prose-sm max-w-none text-navy-800/80 mb-10">
               <p className="font-sans text-[15px] leading-relaxed">
-                Black tie perfection. Arrive in uncompromising style with this Castangia tuxedo. Featuring exquisite detailing and the luxurious comfort of Super 130's wool, this piece ensures you will be the best-dressed man in the room at your next gala or formal event.
+                Black tie perfection. Arrive in uncompromising style with this Castangia tuxedo. Featuring exquisite detailing and the luxurious comfort of Super 180's wool, this piece ensures you will be the best-dressed man in the room at your next gala or formal event.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export const CastangiaTuxedoPage: React.FC<CastangiaTuxedoPageProps> = ({ onBack
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Fabric</span>
-                  <span>Super 130's Wool</span>
+                  <span>Super 180's Wool</span>
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Model</span>

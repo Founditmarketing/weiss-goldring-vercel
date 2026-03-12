@@ -14,7 +14,7 @@ export const CastangiaBlackSuitPage: React.FC<CastangiaBlackSuitPageProps> = ({ 
 
   // Hidden tags for potential backend/search use
   const productTags = [
-    'Castangia', 'Suit', 'Black', 'Super 130s', 'Wool', 'Formal', 'Eveningwear', 'Y211/133'
+    'Castangia', 'Suit', 'Black', 'Super 180s', 'Wool', 'Formal', 'Eveningwear', 'Y211/133'
   ];
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export const CastangiaBlackSuitPage: React.FC<CastangiaBlackSuitPageProps> = ({ 
                 Black Suit
               </h1>
               <p className="font-sans text-[13px] tracking-wide text-navy-800/60 uppercase">
-                Super 130's Wool
+                Super 180's Wool
               </p>
             </div>
 
             <div className="prose prose-sm max-w-none text-navy-800/80 mb-10">
               <p className="font-sans text-[15px] leading-relaxed">
-                Sleek, powerful, and undeniably elegant. This Castangia black suit offers a masterful silhouette cut from ultra-fine Super 130's wool. An essential garment for evening events and solemn occasions.
+                Sleek, powerful, and undeniably elegant. This Castangia black suit offers a masterful silhouette cut from ultra-fine Super 180's wool. An essential garment for evening events and solemn occasions.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export const CastangiaBlackSuitPage: React.FC<CastangiaBlackSuitPageProps> = ({ 
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Fabric</span>
-                  <span>Super 130's Wool</span>
+                  <span>Super 180's Wool</span>
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Model</span>

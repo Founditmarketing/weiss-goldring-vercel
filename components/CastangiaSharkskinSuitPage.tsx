@@ -14,7 +14,7 @@ export const CastangiaSharkskinSuitPage: React.FC<CastangiaSharkskinSuitPageProp
 
   // Hidden tags for potential backend/search use
   const productTags = [
-    'Castangia', 'Suit', 'Grey', 'Sharkskin', 'Super 130s', 'Wool', 'Business', 'Formal', 'Y211/133'
+    'Castangia', 'Suit', 'Grey', 'Sharkskin', 'Super 180s', 'Wool', 'Business', 'Formal', 'Y211/133'
   ];
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export const CastangiaSharkskinSuitPage: React.FC<CastangiaSharkskinSuitPageProp
                 Grey Sharkskin Suit
               </h1>
               <p className="font-sans text-[13px] tracking-wide text-navy-800/60 uppercase">
-                Super 130's Sharkskin
+                Super 180's Sharkskin
               </p>
             </div>
 
             <div className="prose prose-sm max-w-none text-navy-800/80 mb-10">
               <p className="font-sans text-[15px] leading-relaxed">
-                Command attention with the subtle texture and timeless elegance of sharkskin. This Castangia suit is crafted from premium Super 130's wool, delivering a sophisticated grey hue that is both versatile and distinctive.
+                Command attention with the subtle texture and timeless elegance of sharkskin. This Castangia suit is crafted from premium Super 180's wool, delivering a sophisticated grey hue that is both versatile and distinctive.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export const CastangiaSharkskinSuitPage: React.FC<CastangiaSharkskinSuitPageProp
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Fabric</span>
-                  <span>Super 130's Sharkskin (Wool)</span>
+                  <span>Super 180's Sharkskin (Wool)</span>
                 </li>
                 <li className="flex flex-col sm:flex-row sm:items-center py-2 border-b border-navy-50">
                   <span className="sm:w-1/3 font-medium text-navy-900 mb-1 sm:mb-0">Model</span>
