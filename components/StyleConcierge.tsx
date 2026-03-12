@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useDragControls } from 'framer-motion';
 import Send from 'lucide-react/dist/esm/icons/send';
 import X from 'lucide-react/dist/esm/icons/x';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
 import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
+import PictureInPicture from 'lucide-react/dist/esm/icons/picture-in-picture';
+import PanelRight from 'lucide-react/dist/esm/icons/panel-right';
 
 interface Message {
   id: string;
@@ -231,6 +233,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
 
 export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy') => void }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFloating, setIsFloating] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== 'undefined') {
       const stored = sessionStorage.getItem('voiceflow_chat_history');
@@ -339,6 +342,18 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       return () => clearTimeout(timer);
     }
   }, [messages, isOpen]);
+
+  // Draggable Window Logic
+  const dragControls = useDragControls();
+  const dragX = useMotionValue(0);
+  const dragY = useMotionValue(0);
+
+  useEffect(() => {
+    if (!isFloating) {
+      dragX.set(0);
+      dragY.set(0);
+    }
+  }, [isFloating, dragX, dragY]);
 
   // Magnetic Button Logic
   const x = useMotionValue(0);
@@ -564,11 +579,21 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
+            drag={isFloating}
+            dragControls={dragControls}
+            dragListener={false}
+            dragMomentum={false}
+            style={isFloating ? { x: dragX, y: dragY } : undefined}
+            initial={isFloating ? { scale: 0.9, opacity: 0 } : { opacity: 0, x: "100%" }}
+            animate={isFloating ? { scale: 1, opacity: 1 } : { opacity: 1, x: 0 }}
+            exit={isFloating ? { scale: 0.9, opacity: 0 } : { opacity: 0, x: "100%" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-0 right-0 z-[100] w-full sm:w-[450px] h-[100dvh] bg-[#091521]/95 border-l border-gold-300/20 shadow-2xl flex flex-col overflow-hidden backdrop-blur-xl">
+            className={`fixed z-[100] flex flex-col overflow-hidden backdrop-blur-xl transition-[width,height,bottom,right,border-radius] duration-500 bg-[#091521]/95 border-gold-300/20 shadow-2xl ${
+              isFloating
+                ? 'w-[90vw] sm:w-[400px] h-[75vh] sm:h-[600px] bottom-6 sm:bottom-10 right-6 sm:right-10 rounded-2xl border'
+                : 'top-0 right-0 w-full sm:w-[450px] h-[100dvh] rounded-none border-l'
+            }`}
+          >
             
             {/* Very faint, elegant vertical pinstripe background (Sartorial luxury) */}
             <div 
@@ -579,8 +604,11 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             />
 
             {/* Header Title */}
-            <div className="absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent pointer-events-none">
-              <span className="font-serif italic text-gold-300/90 text-[19px]">Personal Concierge</span>
+            <div 
+              onPointerDown={(e) => isFloating && dragControls.start(e)}
+              className={`absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent ${isFloating ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'}`}
+            >
+              <span className="font-serif italic text-gold-300/90 text-[19px] pointer-events-none">Personal Concierge</span>
             </div>
 
             {/* Elegant Close Button */}
@@ -815,6 +843,30 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               )}
               <div ref={messagesEndRef} className="h-8 w-full shrink-0" />
             </motion.div>
+
+            {/* Mode Toggle Button */}
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className={`absolute right-6 z-50 transition-all duration-500 ${isInputHidden ? 'bottom-8' : 'bottom-[100px]'}`}
+                >
+                  <button
+                    onClick={() => setIsFloating(!isFloating)}
+                    className="w-10 h-10 bg-gold-500 hover:bg-gold-400 text-black rounded-full flex items-center justify-center shadow-[0_4px_15px_rgba(212,175,55,0.4)] transition-transform hover:scale-105 group relative"
+                  >
+                    {isFloating ? <PanelRight className="w-5 h-5" /> : <PictureInPicture className="w-5 h-5" />}
+                    
+                    {/* Tooltip */}
+                    <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 bg-[#050E17]/90 border border-gold-300/20 text-gold-300/90 text-[10px] uppercase tracking-wider px-3 py-1.5 rounded whitespace-nowrap pointer-events-none transition-opacity">
+                      {isFloating ? "Dock to Sidebar" : "Float Window"}
+                    </div>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Input Console */}
             <AnimatePresence>
