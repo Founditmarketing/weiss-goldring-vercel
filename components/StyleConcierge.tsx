@@ -749,7 +749,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && onSend(input)}
                         placeholder="Message..."
-                        className="flex-1 bg-transparent py-3 text-white/90 placeholder:text-white/40 text-sm focus:outline-none font-sans tracking-wide"
+                        className="flex-1 bg-transparent py-3 text-white/90 placeholder:text-white/40 text-[16px] focus:outline-none font-sans tracking-wide"
                       />
                       <button
                         onClick={() => onSend(input)}
