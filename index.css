@@ -1,1 +1,12 @@
 /* Custom CSS */
+@keyframes highlight-pulse {
+  0% { box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); border-color: rgba(212, 175, 55, 0); }
+  15% { box-shadow: 0 0 50px 15px rgba(212, 175, 55, 0.4); border-color: rgba(212, 175, 55, 0.8); }
+  75% { box-shadow: 0 0 50px 15px rgba(212, 175, 55, 0.4); border-color: rgba(212, 175, 55, 0.8); }
+  100% { box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); border-color: rgba(212, 175, 55, 0); }
+}
+
+.animate-highlight {
+  animation: highlight-pulse 4s ease-in-out forwards;
+  z-index: 10;
+}

@@ -166,7 +166,15 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
 
         if (targetUrl) {
           console.log(`Voiceflow explicitly requested immediate redirect to: ${targetUrl}`);
-          window.location.href = targetUrl;
+          try {
+            // Append ?highlight=true to the target URL
+            const urlObj = new URL(targetUrl, window.location.origin);
+            urlObj.searchParams.set('highlight', 'true');
+            window.location.href = urlObj.toString();
+          } catch (e) {
+            // Fallback in case of invalid URL format
+            window.location.href = targetUrl;
+          }
         }
       }
 

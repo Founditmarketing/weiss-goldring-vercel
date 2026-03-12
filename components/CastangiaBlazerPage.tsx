@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import ArrowLeft from 'lucide-react/dist/esm/icons/arrow-left';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
 
@@ -10,6 +11,8 @@ interface CastangiaBlazerPageProps {
 
 export const CastangiaBlazerPage: React.FC<CastangiaBlazerPageProps> = ({ onBack, onBook }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const location = useLocation();
+  const isHighlighted = new URLSearchParams(location.search).get('highlight') === 'true';
   const [activeImage, setActiveImage] = useState('/cas-blazer-48319.jpg');
 
   // Hidden tags for potential backend/search use
@@ -50,7 +53,7 @@ export const CastangiaBlazerPage: React.FC<CastangiaBlazerPageProps> = ({ onBack
             className="w-full lg:w-1/2 flex flex-col gap-6"
           >
             {/* Primary Large Image */}
-            <div className="w-full aspect-[3/4] sm:aspect-square lg:aspect-[3/4] bg-white border border-navy-100 relative overflow-hidden group">
+            <div className={`w-full aspect-[3/4] sm:aspect-square lg:aspect-[3/4] bg-white border relative overflow-hidden group ${isHighlighted ? 'animate-highlight border-gold-300' : 'border-navy-100'}`}>
               <img 
                 src={activeImage} 
                 alt="Castangia Navy Blazer" 
