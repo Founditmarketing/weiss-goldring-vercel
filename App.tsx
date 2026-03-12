@@ -116,7 +116,7 @@ function App() {
             </>
           } />
           <Route path="/heritage" element={<HeritagePage onBack={() => navigateTo('home')} />} />
-          <Route path="/brands" element={<MerchandisePage onBack={() => navigateTo('home')} />} />
+          <Route path="/brands" element={<MerchandisePage onBack={() => navigateTo('home')} onNavigate={navigateTo} />} />
           <Route path="/privacy" element={<PrivacyPolicy onBack={() => navigateTo('home')} />} />
           <Route path="/castangia" element={<CastangiaPage onBack={() => navigateTo('home')} onNavigate={navigateTo} />} />
           <Route path="/product/castangia-navy-blazer" element={<CastangiaBlazerPage onBack={() => navigateTo('castangia')} onBook={openAppointment} />} />
