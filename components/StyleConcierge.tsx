@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useDragControls } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useDragControls, animate } from 'framer-motion';
 import Send from 'lucide-react/dist/esm/icons/send';
 import X from 'lucide-react/dist/esm/icons/x';
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right';
@@ -355,6 +355,31 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     }
   }, [isFloating, dragX, dragY]);
 
+  const handleDragEnd = (_event: any, info: any) => {
+    if (!isFloating) return;
+    
+    // Calculate projected destination using velocity for a natural feel
+    const projectedY = dragY.get() + (info.velocity.y * 0.1);
+    const h = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+    
+    // 3 distinct snap positions: Bottom (default), Middle, and Top
+    let snapPoints = [0];
+    if (isMobile) {
+      snapPoints = [0, -(h * 0.22), -(h * 0.46)]; // Top boundary matches dragConstraint top
+    } else {
+      snapPoints = [0, -200, -450];
+    }
+    
+    // Find closest snap point
+    const closest = snapPoints.reduce((prev, curr) => 
+      Math.abs(curr - projectedY) < Math.abs(prev - projectedY) ? curr : prev
+    );
+    
+    // Snap smoothly with spring animation
+    animate(dragY, closest, { type: 'spring', bounce: 0.15, duration: 0.6 });
+  };
+
   // Magnetic Button Logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -579,7 +604,9 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       <AnimatePresence>
         {isOpen && (
           <motion.div 
-            drag={isFloating}
+            drag={isFloating ? "y" : false}
+            onDragEnd={handleDragEnd}
+            dragConstraints={{ top: typeof window !== 'undefined' ? (window.innerWidth < 640 ? -window.innerHeight * 0.46 : -450) : -450, bottom: 0 }}
             dragControls={dragControls}
             dragListener={false}
             dragMomentum={false}
@@ -594,6 +621,15 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 : 'top-0 right-0 w-full sm:w-[450px] h-[100dvh] rounded-none border-l'
             }`}
           >
+            {/* Draggable Borders: Touch around edges to move, touch center to scroll */}
+            {isFloating && (
+              <>
+                <div onPointerDown={(e) => dragControls.start(e)} style={{ touchAction: 'none' }} className="absolute top-0 left-0 right-0 h-10 z-[60] cursor-grab active:cursor-grabbing touch-none" />
+                <div onPointerDown={(e) => dragControls.start(e)} style={{ touchAction: 'none' }} className="absolute bottom-0 left-0 right-0 h-6 z-[60] cursor-grab active:cursor-grabbing touch-none" />
+                <div onPointerDown={(e) => dragControls.start(e)} style={{ touchAction: 'none' }} className="absolute top-0 bottom-0 left-0 w-6 z-[60] cursor-grab active:cursor-grabbing touch-none" />
+                <div onPointerDown={(e) => dragControls.start(e)} style={{ touchAction: 'none' }} className="absolute top-0 bottom-0 right-0 w-6 z-[60] cursor-grab active:cursor-grabbing touch-none" />
+              </>
+            )}
             
             {/* Very faint, elegant vertical pinstripe background (Sartorial luxury) */}
             <div 
@@ -605,9 +641,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
 
             {/* Header Title */}
             <div 
-              onPointerDown={(e) => isFloating && dragControls.start(e)}
-              style={{ touchAction: 'none' }}
-              className={`absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent ${isFloating ? 'cursor-grab active:cursor-grabbing touch-none' : 'pointer-events-none'}`}
+              className={`absolute top-0 w-full text-center pt-6 pb-20 z-40 bg-gradient-to-b from-[#091521] via-[#091521]/95 via-40% to-transparent pointer-events-none`}
             >
               <span className="font-serif italic text-gold-300/90 text-[19px] pointer-events-none">Personal Concierge</span>
             </div>
