@@ -11,7 +11,7 @@ export default async function handler(
         return response.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { query, sessionKey, type = 'text' } = request.body;
+    const { query, sessionKey, type = 'text', pageUrl } = request.body;
 
     if (!sessionKey || (type !== 'launch' && !query)) {
         return response.status(400).json({
@@ -29,6 +29,24 @@ export default async function handler(
     }
 
     try {
+        if (pageUrl) {
+            try {
+                await axios.patch(
+                    `https://general-runtime.voiceflow.com/state/user/${sessionKey}/variables`,
+                    { page_url: pageUrl },
+                    {
+                        headers: {
+                            'Authorization': token,
+                            'versionID': 'development',
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+            } catch (e: any) {
+                console.error("Failed to inject pageUrl context variable", e.message);
+            }
+        }
+
         const actionPayload = type === 'launch' 
             ? { type: 'launch' }
             : { type: 'text', payload: query };

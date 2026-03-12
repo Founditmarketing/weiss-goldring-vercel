@@ -21,14 +21,14 @@ interface ConsultationResponse {
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
-const handleConsultationRequest = async (message: string, userKey: string, type: string = 'text'): Promise<ConsultationResponse> => {
+const handleConsultationRequest = async (message: string, userKey: string, type: string = 'text', pageUrl?: string): Promise<ConsultationResponse> => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query: message, sessionKey: userKey, type }),
+      body: JSON.stringify({ query: message, sessionKey: userKey, type, pageUrl }),
     });
 
     let json;
@@ -115,7 +115,6 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
             const parsed = JSON.parse(trace.payload);
             targetUrl = parsed.target_url;
           } else if (typeof trace.payload === 'object' && trace.payload !== null) {
-            // Check direct property or nested within a parsed JSON string inside the object
             if (trace.payload.target_url) {
               targetUrl = trace.payload.target_url;
             } else if (typeof trace.payload.payload === 'string') {
@@ -128,12 +127,94 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         }
 
         if (targetUrl) {
-          console.log(`Voiceflow requested redirect to: ${targetUrl}`);
-
-          // Delay redirect slightly so the user sees any final chat message Voiceflow sent
+          console.log(`Voiceflow requested map redirect to: ${targetUrl}`);
           setTimeout(() => {
             window.location.href = targetUrl;
           }, 1500);
+        }
+      }
+
+      // Check for Custom Action: redirect
+      const isRedirect =
+        trace.type === 'redirect' ||
+        (trace.type === 'custom_action' && trace.payload?.name === 'redirect') ||
+        (trace.type === 'Custom' && trace.payload?.name === 'redirect') ||
+        trace.payload?.action === 'redirect' ||
+        trace.payload?.name === 'redirect';
+
+      if (isRedirect) {
+        let targetUrl = '';
+        try {
+          if (typeof trace.payload === 'string') {
+            const parsed = JSON.parse(trace.payload);
+            targetUrl = parsed.url;
+          } else if (typeof trace.payload === 'object' && trace.payload !== null) {
+            if (trace.payload.url) {
+              targetUrl = trace.payload.url;
+            } else if (typeof trace.payload.payload === 'string') {
+              const nestedParsed = JSON.parse(trace.payload.payload);
+              targetUrl = nestedParsed.url;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse redirect payload:", e);
+        }
+
+        if (targetUrl) {
+          console.log(`Voiceflow explicitly requested delayed redirect to: ${targetUrl}`);
+          setTimeout(() => {
+            window.location.href = targetUrl;
+          }, 2500);
+        }
+      }
+
+      // Check for Custom Action: highlight
+      const isHighlight =
+        trace.type === 'highlight' ||
+        (trace.type === 'custom_action' && trace.payload?.name === 'highlight') ||
+        (trace.type === 'Custom' && trace.payload?.name === 'highlight') ||
+        trace.payload?.action === 'highlight' ||
+        trace.payload?.name === 'highlight';
+
+      if (isHighlight) {
+        let targetId = '';
+        try {
+          if (typeof trace.payload === 'string') {
+            const parsed = JSON.parse(trace.payload);
+            targetId = parsed.targetId;
+          } else if (typeof trace.payload === 'object' && trace.payload !== null) {
+            if (trace.payload.targetId) {
+              targetId = trace.payload.targetId;
+            } else if (typeof trace.payload.payload === 'string') {
+              const nestedParsed = JSON.parse(trace.payload.payload);
+              targetId = nestedParsed.targetId;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse highlight payload:", e);
+        }
+
+        if (targetId) {
+          console.log(`Voiceflow requested UI highlight on element ID: ${targetId}`);
+          setTimeout(() => {
+            const el = document.getElementById(targetId);
+            if (el) {
+              const originalTransition = el.style.transition;
+              const originalBoxShadow = el.style.boxShadow;
+              
+              el.style.transition = 'all 0.5s ease-in-out';
+              el.style.boxShadow = '0 0 30px rgba(212, 175, 55, 0.9)';
+              
+              setTimeout(() => {
+                el.style.boxShadow = originalBoxShadow || 'none';
+                setTimeout(() => {
+                  el.style.transition = originalTransition || '';
+                }, 500);
+              }, 4000);
+            } else {
+              console.warn(`Highlight target element '${targetId}' not found in DOM.`);
+            }
+          }, 100);
         }
       }
     }
@@ -213,7 +294,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       const fetchGreeting = async () => {
         setIsTyping(true);
         try {
-          const response = await handleConsultationRequest('', sessionKey, 'launch');
+          const response = await handleConsultationRequest('', sessionKey, 'launch', window.location.pathname);
           if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
             setMessages([{
               id: Date.now().toString(),
