@@ -686,7 +686,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.1 } }}
               ref={scrollContainerRef}
-              className={`relative z-10 w-full flex-1 px-6 overflow-y-auto overscroll-contain flex flex-col scrollbar-hide pt-[110px] transition-all duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
+              className={`relative z-10 w-full flex-1 px-6 overflow-y-auto overscroll-contain flex flex-col scrollbar-hide pt-[110px] transition-[padding] duration-500 ${isInputHidden ? 'pb-12' : 'pb-4'}`}
               style={{
                 transformOrigin: 'bottom',
                 maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 98%, transparent)',
@@ -698,14 +698,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 {[...messages].reverse().map((msg, idx) => (
                   <motion.div
                     key={msg.id}
-                    layout
                     initial={{ opacity: 0, y: 40 }}
                     animate={{
                       opacity: 1,
                       y: 0,
                       transition: {
                         duration: 0.6,
-                        delay: idx === messages.length - 1 && messages.length === 1 ? 0.3 : 0,
+                        delay: idx === messages.length - 1 && messages.length === 1 ? 1.0 : 0,
                         ease: [0.16, 1, 0.3, 1]
                       }
                     }}
@@ -914,9 +913,9 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             <AnimatePresence>
               {!isInputHidden && (
                 <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 80, opacity: 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   style={{ transformOrigin: 'bottom' }}
                   className="relative z-20 w-full px-6 py-6 shrink-0 bg-[#091521]/95 border-t border-white/[0.02]"
