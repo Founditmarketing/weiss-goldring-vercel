@@ -23,9 +23,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookClick, onNavigate, activeP
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isLightForeground = isScrolled || activePage !== 'home' || isMobileMenuOpen;
   const navClass = (isScrolled || activePage !== 'home') ? 'bg-cream/95 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-6';
-  const textClass = (isScrolled || activePage !== 'home') ? 'text-navy-900' : 'text-white';
-  const buttonVariant = (isScrolled || activePage !== 'home') ? 'primary' : 'outline';
+  const textClass = isLightForeground ? 'text-navy-900' : 'text-white';
+  const buttonVariant = isLightForeground ? 'primary' : 'outline';
 
   const links: { name: string; page: Page }[] = [
     { name: 'Home', page: 'home' },
@@ -45,9 +46,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookClick, onNavigate, activeP
           <img
             src="/weissangoldringlogo.png"
             alt="Weiss & Goldring"
-            className={`h-8 md:h-10 w-auto object-contain transition-all duration-300 ${isScrolled || activePage !== 'home' ? 'invert' : ''}`}
+            className={`h-8 md:h-10 w-auto object-contain transition-all duration-300 ${isLightForeground ? 'invert' : ''}`}
           />
-          <span className={`text-[0.6rem] tracking-[0.3em] uppercase ${isScrolled || activePage !== 'home' ? 'text-gold-500' : 'text-gold-300'} hidden md:block transition-colors mt-1`}>
+          <span className={`text-[0.6rem] tracking-[0.3em] uppercase ${isLightForeground ? 'text-gold-500' : 'text-gold-300'} hidden md:block transition-colors mt-1`}>
             Est. 1899 • Alexandria, LA
           </span>
         </div>
@@ -66,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookClick, onNavigate, activeP
           <Button
             onClick={onBookClick}
             variant={buttonVariant}
-            className={(!isScrolled && activePage === 'home') ? 'border-white text-white hover:bg-white hover:text-navy-900' : ''}
+            className={(!isLightForeground && activePage === 'home') ? 'border-white text-white hover:bg-white hover:text-navy-900' : ''}
           >
             Book Appointment
           </Button>
