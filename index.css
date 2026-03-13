@@ -27,8 +27,12 @@
   position: absolute;
   inset: 0;
   z-index: 20; /* Sit on top of the image */
-  border: 3px solid transparent;
-  border-image: conic-gradient(from var(--angle), transparent 50%, #D4AF37 80%, #F9F1D8 95%, #D4AF37 100%) 1;
+  padding: 3px; /* Controls border thickness for mask */
+  background: conic-gradient(from var(--angle), transparent 50%, #D4AF37 80%, #F9F1D8 95%, #D4AF37 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
   animation: rotate-border 3.5s linear forwards, fade-highlight 3.5s ease-in-out forwards;
   pointer-events: none;
 }
