@@ -7,6 +7,19 @@ import CalendarIcon from 'lucide-react/dist/esm/icons/calendar';
 import Minimize2 from 'lucide-react/dist/esm/icons/minimize-2';
 import Maximize2 from 'lucide-react/dist/esm/icons/maximize-2';
 
+interface CarouselButton {
+  name: string;
+  request?: { type?: string, payload?: { url?: string, label?: string, actions?: any[] } };
+}
+
+interface CarouselCard {
+  id: string;
+  title: string;
+  description: { text: string };
+  imageUrl: string;
+  buttons: CarouselButton[];
+}
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
@@ -14,12 +27,14 @@ interface Message {
   isCalendarPicker?: boolean;
   calendarSubmitted?: boolean;
   buttons?: { name: string, payload: any }[];
+  carousel?: CarouselCard[];
 }
 
 interface ConsultationResponse {
   text: string;
   hasCalendarPicker: boolean;
   buttons?: { name: string, payload: any }[];
+  carousel?: CarouselCard[];
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
@@ -67,6 +82,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
     let assistantText = "";
     let hasCalendarPicker = false;
     let buttons: { name: string, payload: any }[] = [];
+    let carouselCards: CarouselCard[] = [];
 
     for (const trace of traces) {
       console.log('Voiceflow Trace:', trace); // Log every trace for debugging
@@ -85,6 +101,19 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
                payload: b.request?.payload || b.name 
              });
           }
+        });
+      }
+
+      // Check for Carousel (Lookbooks)
+      if (trace.type === 'carousel' && trace.payload?.cards) {
+        trace.payload.cards.forEach((card: any) => {
+            carouselCards.push({
+                id: card.id,
+                title: card.title,
+                description: card.description || { text: '' },
+                imageUrl: card.imageUrl,
+                buttons: card.buttons || []
+            });
         });
       }
 
@@ -247,7 +276,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       }
     }
 
-    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined }; // We return empty string if there's ONLY a redirect trace
+    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined, carousel: carouselCards.length > 0 ? carouselCards : undefined }; // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return { 
@@ -806,6 +835,71 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                 </button>
                               );
                             })}
+                          </div>
+                        )}
+                        {msg.role === 'assistant' && msg.carousel && msg.carousel.length > 0 && (
+                          <div className="mt-4 flex overflow-x-auto gap-4 pb-2 scrollbar-hide snap-x relative w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
+                            {msg.carousel.map((card, cIdx) => (
+                              <div key={card.id || cIdx} className="snap-start flex-shrink-0 w-60 bg-black/20 border border-gold-300/20 rounded-md overflow-hidden flex flex-col group hover:border-gold-300/40 transition-colors">
+                                {card.imageUrl && (
+                                  <div className="w-full h-40 bg-black/40 overflow-hidden relative">
+                                    <img src={card.imageUrl} alt={card.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                  </div>
+                                )}
+                                <div className="p-4 flex flex-col flex-1">
+                                  {card.title && <h4 className="font-serif italic text-[18px] text-white/90 mb-1 leading-tight">{card.title}</h4>}
+                                  {card.description?.text && <p className="font-sans text-[11px] text-white/60 leading-relaxed mb-4 flex-1">{card.description.text}</p>}
+                                  {card.buttons && card.buttons.length > 0 && (
+                                    <div className="mt-auto flex flex-col gap-2">
+                                      {card.buttons.map((btn, bIdx) => (
+                                        <button
+                                          key={bIdx}
+                                          onClick={() => {
+                                            const url = btn.request?.payload?.url;
+                                            if (url) {
+                                              // External or relative redirect handled manually here since Voiceflow buttons might contain absolute URLs
+                                              if (url.startsWith('http')) {
+                                                  // Quick check if it's the Vercel app domain to handle internally
+                                                  if (url.includes('weiss-goldring-vercel.vercel.app')) {
+                                                      const path = new URL(url).pathname;
+                                                      if (onNavigate) {
+                                                          // Map to valid route
+                                                          let p: any = 'home';
+                                                          if (path.includes('heritage')) p = 'heritage';
+                                                          if (path.includes('brands')) p = 'brands';
+                                                          if (path.includes('castangia-navy-blazer')) p = 'castangia-blazer';
+                                                          if (path.includes('castangia-grey-sharkskin-suit')) p = 'castangia-sharkskin';
+                                                          if (path.includes('castangia-navy-suit')) p = 'castangia-navy-suit';
+                                                          if (path.includes('castangia-black-suit')) p = 'castangia-black-suit';
+                                                          if (path.includes('castangia-tuxedo')) p = 'castangia-tuxedo';
+                                                          if (path === '/castangia') p = 'castangia';
+                                                          
+                                                          setIsFloating(true);
+                                                          onNavigate(p);
+                                                      } else {
+                                                          window.location.href = url;
+                                                      }
+                                                  } else {
+                                                      window.open(url, '_blank');
+                                                  }
+                                              } else {
+                                                  window.location.href = url;
+                                              }
+                                            } else {
+                                              // Fallback action button
+                                              onSend(btn.name);
+                                            }
+                                          }}
+                                          className="w-full py-2 border border-gold-300/30 text-gold-300/80 hover:bg-gold-300 hover:text-navy-900 rounded font-sans text-[10px] tracking-widest uppercase transition-colors text-center"
+                                        >
+                                          {btn.name}
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         )}
                         {msg.role === 'assistant' && msg.isCalendarPicker && !msg.calendarSubmitted && (
