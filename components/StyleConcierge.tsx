@@ -494,16 +494,35 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
          } else {
              // It's a relative path, map it to the onNavigate prop string
              let pageTarget: Parameters<typeof onNavigate>[0] = 'home'; // Default to home
-             if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
-             else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
-             else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
-             else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
-             else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
-             else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
-             else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
-             else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
-             else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
-             else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+             
+             try {
+                 const parsedUrl = new URL(response.redirectUrl, 'http://localhost');
+                 const path = parsedUrl.pathname;
+                 const hash = parsedUrl.hash;
+
+                 if (path === '/heritage') pageTarget = 'heritage';
+                 else if (path === '/brands') pageTarget = 'brands';
+                 else if (path === '/privacy') pageTarget = 'privacy';
+                 else if (path === '/product/castangia-navy-blazer') pageTarget = 'castangia-blazer';
+                 else if (path === '/product/castangia-grey-sharkskin-suit') pageTarget = 'castangia-sharkskin';
+                 else if (path === '/product/castangia-navy-suit') pageTarget = 'castangia-navy-suit';
+                 else if (path === '/product/castangia-black-suit') pageTarget = 'castangia-black-suit';
+                 else if (path === '/product/castangia-tuxedo') pageTarget = 'castangia-tuxedo';
+                 else if (path === '/castangia') pageTarget = 'castangia';
+                 else if (hash === '#ted') pageTarget = 'ted';
+             } catch (e) {
+                 // Fallback for relative paths that fail URL parsing
+                 if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
+                 else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
+                 else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
+                 else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
+                 else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
+                 else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
+                 else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
+                 else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
+                 else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
+                 else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+             }
              
              if (onNavigate) {
                 // Remove the highlight flag if it was appended so it doesn't break the NextJS router state
@@ -573,16 +592,35 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
          } else {
              // It's a relative path, map it to the onNavigate prop string
              let pageTarget: Parameters<typeof onNavigate>[0] = 'home'; // Default to home
-             if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
-             else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
-             else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
-             else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
-             else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
-             else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
-             else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
-             else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
-             else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
-             else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+             
+             try {
+                 const parsedUrl = new URL(response.redirectUrl, 'http://localhost');
+                 const path = parsedUrl.pathname;
+                 const hash = parsedUrl.hash;
+
+                 if (path === '/heritage') pageTarget = 'heritage';
+                 else if (path === '/brands') pageTarget = 'brands';
+                 else if (path === '/privacy') pageTarget = 'privacy';
+                 else if (path === '/product/castangia-navy-blazer') pageTarget = 'castangia-blazer';
+                 else if (path === '/product/castangia-grey-sharkskin-suit') pageTarget = 'castangia-sharkskin';
+                 else if (path === '/product/castangia-navy-suit') pageTarget = 'castangia-navy-suit';
+                 else if (path === '/product/castangia-black-suit') pageTarget = 'castangia-black-suit';
+                 else if (path === '/product/castangia-tuxedo') pageTarget = 'castangia-tuxedo';
+                 else if (path === '/castangia') pageTarget = 'castangia';
+                 else if (hash === '#ted') pageTarget = 'ted';
+             } catch (e) {
+                 // Fallback for relative paths that fail URL parsing
+                 if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
+                 else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
+                 else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
+                 else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
+                 else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
+                 else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
+                 else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
+                 else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
+                 else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
+                 else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+             }
              
              if (onNavigate) {
                 // Remove the highlight flag if it was appended so it doesn't break the NextJS router state
