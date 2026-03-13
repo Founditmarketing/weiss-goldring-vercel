@@ -12,8 +12,8 @@
 
 @keyframes fade-highlight {
   0% { opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
   100% { opacity: 0; }
 }
 
@@ -29,6 +29,6 @@
   z-index: 20; /* Sit on top of the image */
   border: 3px solid transparent;
   border-image: conic-gradient(from var(--angle), transparent 50%, #D4AF37 80%, #F9F1D8 95%, #D4AF37 100%) 1;
-  animation: rotate-border 2s linear infinite, fade-highlight 4.5s ease-in-out forwards;
+  animation: rotate-border 3.5s linear forwards, fade-highlight 3.5s ease-in-out forwards;
   pointer-events: none;
 }
