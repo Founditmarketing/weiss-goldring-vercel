@@ -695,7 +695,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className={`fixed z-[100] flex flex-col overflow-hidden backdrop-blur-xl bg-[#091521]/95 border-gold-300/20 shadow-2xl ${
               isFloating
-                ? 'w-[90vw] sm:w-[400px] h-[50vh] sm:h-[600px] bottom-6 sm:bottom-10 right-6 sm:right-10 rounded-2xl border'
+                ? 'w-[90vw] sm:w-[400px] h-[50vh] sm:h-[600px] bottom-6 sm:bottom-10 left-0 right-0 mx-auto sm:left-auto sm:right-10 rounded-2xl border'
                 : 'top-0 right-0 w-full sm:w-[450px] h-[100dvh] rounded-none border-l'
             }`}
           >
