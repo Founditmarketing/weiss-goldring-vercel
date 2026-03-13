@@ -169,12 +169,13 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         // Voiceflow variable default evaluates to '0'. 
         // If Voiceflow returns '0', the variable was not set properly in the Voiceflow canvas.
         if (targetUrl === '0') {
-           console.warn("⚠️ Voiceflow passed '0' as the URL. This means the {url} variable in your Voiceflow project was empty or unassigned. Defaulting to Castangia Tuxedo for this test.");
-           targetUrl = '/product/castangia-tuxedo';
-        }
-
-        if (targetUrl) {
+           console.error("⚠️ Voiceflow passed '0' as the URL. The variable in Voiceflow is empty.");
+        } else if (targetUrl) {
           console.log(`Voiceflow explicitly requested immediate redirect to: ${targetUrl}`);
+          
+          // Set flag to auto-float widget on the new page load
+          sessionStorage.setItem('voiceflow_auto_float', 'true');
+          
           try {
             // Append ?highlight=true to the target URL
             const urlObj = new URL(targetUrl, window.location.origin);
@@ -316,11 +317,18 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-open chat widget if redirected with highlight parameter
+  // Auto-open chat widget if redirected with highlight parameter or voiceflow flag
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('highlight') === 'true') {
+      const shouldFloat = sessionStorage.getItem('voiceflow_auto_float') === 'true';
+      
+      if (urlParams.get('highlight') === 'true' || shouldFloat) {
+        if (shouldFloat) {
+          setIsFloating(true);    // Instantly queue transition to bubble mode
+          sessionStorage.removeItem('voiceflow_auto_float'); // Clear flag
+        }
+        
         const timer = setTimeout(() => {
           setIsOpen(true);
         }, 800);
