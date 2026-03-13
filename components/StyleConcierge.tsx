@@ -20,6 +20,7 @@ interface ConsultationResponse {
   text: string;
   hasCalendarPicker: boolean;
   buttons?: { name: string, payload: any }[];
+  redirectUrl?: string;
 }
 
 // Live API consultation request via Vercel Serverless Functions (Voiceflow)
@@ -67,6 +68,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
     let assistantText = "";
     let hasCalendarPicker = false;
     let buttons: { name: string, payload: any }[] = [];
+    let redirectUrl: string | undefined = undefined;
 
     for (const trace of traces) {
       console.log('Voiceflow Trace:', trace); // Log every trace for debugging
@@ -177,21 +179,17 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
           sessionStorage.setItem('voiceflow_auto_float', 'true');
           
           try {
-            // Append ?highlight=true to the target URL
-            const urlObj = new URL(targetUrl, window.location.origin);
+            // Check if it's an absolute URL
+            const urlObj = new URL(targetUrl);
             urlObj.searchParams.set('highlight', 'true');
-            window.location.href = urlObj.toString();
+            redirectUrl = urlObj.toString();
           } catch (e) {
-            // Fallback in case of invalid URL format (e.g. relative path without origin or external URL)
-            try {
-               const externalUrl = new URL(targetUrl);
-               externalUrl.searchParams.set('highlight', 'true');
-               window.location.href = externalUrl.toString();
-            } catch (externalError) {
-               // Must be a relative path like '/product/castangia-tuxedo'
-               const separator = targetUrl.includes('?') ? '&' : '?';
-               window.location.href = targetUrl + separator + 'highlight=true';
-            }
+            // It's a relative path (e.g., /brands, /heritage, /#ted)
+            const [pathAndQuery, hash] = targetUrl.split('#');
+            const separator = pathAndQuery.includes('?') ? '&' : '?';
+            
+            // Reconstruct the URL keeping the hash at the very end
+            redirectUrl = pathAndQuery + separator + 'highlight=true' + (hash ? '#' + hash : '');
           }
         }
       }
@@ -247,7 +245,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       }
     }
 
-    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined }; // We return empty string if there's ONLY a redirect trace
+    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined, redirectUrl }; // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return { 
@@ -257,7 +255,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
   }
 };
 
-export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy') => void }) => {
+export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia' | 'castangia-blazer' | 'castangia-sharkskin' | 'castangia-navy-suit' | 'castangia-black-suit' | 'castangia-tuxedo') => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -459,6 +457,50 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
 
     try {
       const response = await handleConsultationRequest(text, sessionKey);
+
+      // Handle programmatic UI redirects returned from Voiceflow
+      if (response.redirectUrl) {
+         if (response.redirectUrl.startsWith('http')) {
+             window.location.href = response.redirectUrl;
+         } else {
+             // It's a relative path, map it to the onNavigate prop string
+             let pageTarget: Parameters<typeof onNavigate>[0] = 'home'; // Default to home
+             if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
+             else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
+             else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
+             else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
+             else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
+             else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
+             else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
+             else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
+             else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
+             else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+             
+             if (onNavigate) {
+                // Remove the highlight flag if it was appended so it doesn't break the NextJS router state
+                const cleanRedirect = response.redirectUrl.replace('?highlight=true', '').replace('&highlight=true', '');
+                // The URL parser might have kept the hash. We strip it for the pageTarget mapping but rely on the hash in App.tsx
+                
+                // Set the floating flag before navigating so the widget shrinks
+                sessionStorage.setItem('voiceflow_auto_float', 'true');
+                setIsFloating(true);
+                
+                onNavigate(pageTarget);
+                
+                // React router won't trigger the hash scroll if we are already on the page when only the hash changes,
+                // so we manually scroll if there's a hash.
+                if (response.redirectUrl.includes('#')) {
+                   const hash = response.redirectUrl.split('#')[1];
+                   setTimeout(() => {
+                     const element = document.getElementById(hash);
+                     if (element) element.scrollIntoView({ behavior: 'smooth' });
+                   }, 100);
+                }
+             } else {
+                window.location.href = response.redirectUrl;
+             }
+         }
+      }
 
       // Only add a chat bubble if Voiceflow returned actual text, buttons, or a calendar picker
       if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
