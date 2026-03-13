@@ -1,38 +1,25 @@
 /* Custom CSS */
-@property --angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@keyframes rotate-border {
-  from { --angle: 0deg; }
-  to { --angle: 360deg; }
-}
-
-@keyframes fade-highlight {
-  0% { opacity: 0; }
-  5% { opacity: 1; }
-  95% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes highlight-pulse {
+  0% { 
+    box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); 
+    border-color: rgba(212, 175, 55, 0); 
+  }
+  20% { 
+    box-shadow: 0 0 35px 5px rgba(212, 175, 55, 0.5); 
+    border-color: rgba(212, 175, 55, 0.8); 
+  }
+  70% { 
+    box-shadow: 0 0 35px 5px rgba(212, 175, 55, 0.5); 
+    border-color: rgba(212, 175, 55, 0.8); 
+  }
+  100% { 
+    box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); 
+    border-color: rgba(212, 175, 55, 0); 
+  }
 }
 
 .animate-highlight {
+  animation: highlight-pulse 3.5s ease-in-out forwards;
   position: relative;
   z-index: 10;
-}
-
-.animate-highlight::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 20; /* Sit on top of the image */
-  padding: 3px; /* Controls border thickness for mask */
-  background: conic-gradient(from var(--angle), transparent 50%, #D4AF37 80%, #F9F1D8 95%, #D4AF37 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: destination-out;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  animation: rotate-border 3.5s linear forwards, fade-highlight 3.5s ease-in-out forwards;
-  pointer-events: none;
 }
