@@ -1,12 +1,41 @@
 /* Custom CSS */
-@keyframes highlight-pulse {
-  0% { box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); border-color: rgba(212, 175, 55, 0); }
-  15% { box-shadow: 0 0 50px 15px rgba(212, 175, 55, 0.4); border-color: rgba(212, 175, 55, 0.8); }
-  75% { box-shadow: 0 0 50px 15px rgba(212, 175, 55, 0.4); border-color: rgba(212, 175, 55, 0.8); }
-  100% { box-shadow: 0 0 0px 0px rgba(212, 175, 55, 0); border-color: rgba(212, 175, 55, 0); }
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotate-border {
+  from { --angle: 0deg; }
+  to { --angle: 360deg; }
+}
+
+@keyframes fade-highlight {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .animate-highlight {
-  animation: highlight-pulse 4s ease-in-out forwards;
+  position: relative;
   z-index: 10;
+}
+
+.animate-highlight::before {
+  content: '';
+  position: absolute;
+  inset: -3px; /* Controls border thickness */
+  z-index: -1;
+  background: conic-gradient(from var(--angle), transparent 50%, #D4AF37 80%, #F9F1D8 95%, #D4AF37 100%);
+  animation: rotate-border 2s linear infinite, fade-highlight 4s ease-in-out forwards;
+  pointer-events: none;
+}
+
+.animate-highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0px; /* Blocks the gradient from filling the center */
+  z-index: -1;
+  background: white;
 }
