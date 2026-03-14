@@ -77,19 +77,18 @@ function App() {
     }
   };
 
-  const navigateTo = (page: Page, query?: string) => {
-    const q = query ? query : '';
+  const navigateTo = (page: Page) => {
     if (page === 'ted') {
       scrollToSection('ted');
       return;
     }
-    if (page === 'home') navigate('/' + q);
-    else if (page === 'castangia-blazer') navigate('/product/castangia-navy-blazer' + q);
-    else if (page === 'castangia-sharkskin') navigate('/product/castangia-grey-sharkskin-suit' + q);
-    else if (page === 'castangia-navy-suit') navigate('/product/castangia-navy-suit' + q);
-    else if (page === 'castangia-black-suit') navigate('/product/castangia-black-suit' + q);
-    else if (page === 'castangia-tuxedo') navigate('/product/castangia-tuxedo' + q);
-    else navigate(`/${page}${q}`);
+    if (page === 'home') navigate('/');
+    else if (page === 'castangia-blazer') navigate('/product/castangia-navy-blazer');
+    else if (page === 'castangia-sharkskin') navigate('/product/castangia-grey-sharkskin-suit');
+    else if (page === 'castangia-navy-suit') navigate('/product/castangia-navy-suit');
+    else if (page === 'castangia-black-suit') navigate('/product/castangia-black-suit');
+    else if (page === 'castangia-tuxedo') navigate('/product/castangia-tuxedo');
+    else navigate(`/${page}`);
   };
 
   const handleFooterLink = (href: string) => {

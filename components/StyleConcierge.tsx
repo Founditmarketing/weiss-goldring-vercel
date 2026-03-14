@@ -288,7 +288,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
   }
 };
 
-export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia' | 'castangia-blazer' | 'castangia-sharkskin' | 'castangia-navy-suit' | 'castangia-black-suit' | 'castangia-tuxedo', query?: string) => void }) => {
+export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?: boolean, onNavigate?: (page: 'home' | 'heritage' | 'brands' | 'ted' | 'privacy' | 'castangia' | 'castangia-blazer' | 'castangia-sharkskin' | 'castangia-navy-suit' | 'castangia-black-suit' | 'castangia-tuxedo') => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFloating, setIsFloating] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -553,8 +553,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 localStorage.setItem('voiceflow_auto_float', 'true');
                 setIsFloating(true);
                 
-                // Pass the highlight flag if present in the redirect url
-                onNavigate(pageTarget, workingUrl.includes('highlight=true') ? '?highlight=true' : undefined);
+                onNavigate(pageTarget);
                 
                 // React router won't trigger the hash scroll if we are already on the page when only the hash changes,
                 // so we manually scroll if there's a hash.
@@ -670,8 +669,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 localStorage.setItem('voiceflow_auto_float', 'true');
                 setIsFloating(true);
                 
-                // Pass the highlight flag if present in the redirect url
-                onNavigate(pageTarget, workingUrl.includes('highlight=true') ? '?highlight=true' : undefined);
+                onNavigate(pageTarget);
                 
                 // React router won't trigger the hash scroll if we are already on the page when only the hash changes,
                 // so we manually scroll if there's a hash.
@@ -1041,7 +1039,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                                           if (path === '/castangia') p = 'castangia';
                                                           
                                                           setIsFloating(true);
-                                                          onNavigate(p, cleanUrl.includes('highlight=true') ? '?highlight=true' : undefined);
+                                                          onNavigate(p);
                                                       } else {
                                                           localStorage.setItem('voiceflow_auto_float', 'true');
                                                           window.location.href = cleanUrl;
