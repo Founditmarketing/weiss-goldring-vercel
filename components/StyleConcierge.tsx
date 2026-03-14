@@ -202,6 +202,10 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         if (targetUrl === '0' || targetUrl.toLowerCase() === 'none') {
            console.error(`⚠️ Voiceflow passed '${targetUrl}' as the URL. The variable in Voiceflow is empty or unset.`);
         } else if (targetUrl) {
+          // INTERCEPT: If voiceflow sends the old vercel domain, upgrade it to the production domain.
+          targetUrl = targetUrl.replace('weiss-goldring-vercel.vercel.app', 'www.weissgoldring.com');
+          targetUrl = targetUrl.replace('http://www.weissgoldring.com', 'https://www.weissgoldring.com'); // enforce https
+
           console.log(`Voiceflow explicitly requested immediate redirect to: ${targetUrl}`);
           
           // Set flag to auto-float widget on the new page load
@@ -489,15 +493,31 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
 
       // Handle programmatic UI redirects returned from Voiceflow
       if (response.redirectUrl) {
-         if (response.redirectUrl.startsWith('http')) {
-             localStorage.setItem('voiceflow_auto_float', 'true');
-             window.location.href = response.redirectUrl;
-         } else {
+         let isExternal = false;
+         let workingUrl = response.redirectUrl;
+         
+         if (workingUrl.startsWith('http')) {
+             if (workingUrl.includes('weissgoldring.com')) {
+                 // It's an absolute URL but points to our domain, convert to relative path for React Router
+                 try {
+                     const parsed = new URL(workingUrl);
+                     workingUrl = parsed.pathname + parsed.hash;
+                 } catch (e) {
+                     console.error("Failed to parse internal absolute URL", e);
+                 }
+             } else {
+                 isExternal = true;
+                 localStorage.setItem('voiceflow_auto_float', 'true');
+                 window.location.href = workingUrl;
+             }
+         }
+         
+         if (!isExternal) {
              // It's a relative path, map it to the onNavigate prop string
              let pageTarget: Parameters<typeof onNavigate>[0] = 'home'; // Default to home
              
              try {
-                 const parsedUrl = new URL(response.redirectUrl, 'http://localhost');
+                 const parsedUrl = new URL(workingUrl, 'http://localhost');
                  const path = parsedUrl.pathname;
                  const hash = parsedUrl.hash;
 
@@ -513,21 +533,21 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                  else if (hash === '#ted') pageTarget = 'ted';
              } catch (e) {
                  // Fallback for relative paths that fail URL parsing
-                 if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
-                 else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
-                 else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
-                 else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
-                 else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
-                 else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
-                 else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
-                 else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
-                 else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
-                 else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+                 if (workingUrl.includes('heritage')) pageTarget = 'heritage';
+                 else if (workingUrl.includes('brands')) pageTarget = 'brands';
+                 else if (workingUrl.includes('ted')) pageTarget = 'ted';
+                 else if (workingUrl.includes('privacy')) pageTarget = 'privacy';
+                 else if (workingUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
+                 else if (workingUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
+                 else if (workingUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
+                 else if (workingUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
+                 else if (workingUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
+                 else if (workingUrl.includes('castangia')) pageTarget = 'castangia';
              }
              
              if (onNavigate) {
                 // Remove the highlight flag if it was appended so it doesn't break the NextJS router state
-                const cleanRedirect = response.redirectUrl.replace('?highlight=true', '').replace('&highlight=true', '');
+                const cleanRedirect = workingUrl.replace('?highlight=true', '').replace('&highlight=true', '');
                 
                 // Set the floating flag before navigating so the widget shrinks
                 localStorage.setItem('voiceflow_auto_float', 'true');
@@ -537,15 +557,16 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 
                 // React router won't trigger the hash scroll if we are already on the page when only the hash changes,
                 // so we manually scroll if there's a hash.
-                if (response.redirectUrl.includes('#')) {
-                   const hash = response.redirectUrl.split('#')[1];
+                if (workingUrl.includes('#')) {
+                   const hashUrl = workingUrl.split('#')[1];
                    setTimeout(() => {
-                     const element = document.getElementById(hash);
+                     const element = document.getElementById(hashUrl);
                      if (element) element.scrollIntoView({ behavior: 'smooth' });
                    }, 100);
                 }
              } else {
-                window.location.href = response.redirectUrl;
+                localStorage.setItem('voiceflow_auto_float', 'true');
+                window.location.href = workingUrl;
              }
          }
       }
@@ -588,15 +609,31 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
 
       // Handle programmatic UI redirects returned from Voiceflow
       if (response.redirectUrl) {
-         if (response.redirectUrl.startsWith('http')) {
-             localStorage.setItem('voiceflow_auto_float', 'true');
-             window.location.href = response.redirectUrl;
-         } else {
+         let isExternal = false;
+         let workingUrl = response.redirectUrl;
+         
+         if (workingUrl.startsWith('http')) {
+             if (workingUrl.includes('weissgoldring.com')) {
+                 // It's an absolute URL but points to our domain, convert to relative path for React Router
+                 try {
+                     const parsed = new URL(workingUrl);
+                     workingUrl = parsed.pathname + parsed.hash;
+                 } catch (e) {
+                     console.error("Failed to parse internal absolute URL", e);
+                 }
+             } else {
+                 isExternal = true;
+                 localStorage.setItem('voiceflow_auto_float', 'true');
+                 window.location.href = workingUrl;
+             }
+         }
+         
+         if (!isExternal) {
              // It's a relative path, map it to the onNavigate prop string
              let pageTarget: Parameters<typeof onNavigate>[0] = 'home'; // Default to home
              
              try {
-                 const parsedUrl = new URL(response.redirectUrl, 'http://localhost');
+                 const parsedUrl = new URL(workingUrl, 'http://localhost');
                  const path = parsedUrl.pathname;
                  const hash = parsedUrl.hash;
 
@@ -612,21 +649,21 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                  else if (hash === '#ted') pageTarget = 'ted';
              } catch (e) {
                  // Fallback for relative paths that fail URL parsing
-                 if (response.redirectUrl.includes('heritage')) pageTarget = 'heritage';
-                 else if (response.redirectUrl.includes('brands')) pageTarget = 'brands';
-                 else if (response.redirectUrl.includes('ted')) pageTarget = 'ted';
-                 else if (response.redirectUrl.includes('privacy')) pageTarget = 'privacy';
-                 else if (response.redirectUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
-                 else if (response.redirectUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
-                 else if (response.redirectUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
-                 else if (response.redirectUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
-                 else if (response.redirectUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
-                 else if (response.redirectUrl.includes('castangia')) pageTarget = 'castangia';
+                 if (workingUrl.includes('heritage')) pageTarget = 'heritage';
+                 else if (workingUrl.includes('brands')) pageTarget = 'brands';
+                 else if (workingUrl.includes('ted')) pageTarget = 'ted';
+                 else if (workingUrl.includes('privacy')) pageTarget = 'privacy';
+                 else if (workingUrl.includes('castangia-navy-blazer')) pageTarget = 'castangia-blazer';
+                 else if (workingUrl.includes('castangia-grey-sharkskin-suit')) pageTarget = 'castangia-sharkskin';
+                 else if (workingUrl.includes('castangia-navy-suit')) pageTarget = 'castangia-navy-suit';
+                 else if (workingUrl.includes('castangia-black-suit')) pageTarget = 'castangia-black-suit';
+                 else if (workingUrl.includes('castangia-tuxedo')) pageTarget = 'castangia-tuxedo';
+                 else if (workingUrl.includes('castangia')) pageTarget = 'castangia';
              }
              
              if (onNavigate) {
                 // Remove the highlight flag if it was appended so it doesn't break the NextJS router state
-                const cleanRedirect = response.redirectUrl.replace('?highlight=true', '').replace('&highlight=true', '');
+                const cleanRedirect = workingUrl.replace('?highlight=true', '').replace('&highlight=true', '');
                 
                 // Set the floating flag before navigating so the widget shrinks
                 localStorage.setItem('voiceflow_auto_float', 'true');
@@ -636,16 +673,16 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 
                 // React router won't trigger the hash scroll if we are already on the page when only the hash changes,
                 // so we manually scroll if there's a hash.
-                if (response.redirectUrl.includes('#')) {
-                   const hash = response.redirectUrl.split('#')[1];
+                if (workingUrl.includes('#')) {
+                   const hashUrl = workingUrl.split('#')[1];
                    setTimeout(() => {
-                     const element = document.getElementById(hash);
+                     const element = document.getElementById(hashUrl);
                      if (element) element.scrollIntoView({ behavior: 'smooth' });
                    }, 100);
                 }
              } else {
                 localStorage.setItem('voiceflow_auto_float', 'true');
-                window.location.href = response.redirectUrl;
+                window.location.href = workingUrl;
              }
          }
       }
@@ -984,9 +1021,11 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                             if (url) {
                                               // External or relative redirect handled manually here since Voiceflow buttons might contain absolute URLs
                                               if (url.startsWith('http')) {
-                                                  // Quick check if it's the Vercel app domain or custom domain to handle internally
-                                                  if (url.includes('weiss-goldring-vercel.vercel.app') || url.includes('weissgoldring.com')) {
-                                                      const path = new URL(url).pathname;
+                                                  const cleanUrl = url.replace('weiss-goldring-vercel.vercel.app', 'www.weissgoldring.com');
+
+                                                  // Quick check if it's the custom domain to handle internally
+                                                  if (cleanUrl.includes('weissgoldring.com')) {
+                                                      const path = new URL(cleanUrl).pathname;
                                                       if (onNavigate) {
                                                           // Map to valid route
                                                           let p: any = 'home';
@@ -1003,10 +1042,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                                           onNavigate(p);
                                                       } else {
                                                           localStorage.setItem('voiceflow_auto_float', 'true');
-                                                          window.location.href = url;
+                                                          window.location.href = cleanUrl;
                                                       }
                                                   } else {
-                                                      window.open(url, '_blank');
+                                                      window.open(cleanUrl, '_blank');
                                                   }
                                               } else {
                                                   localStorage.setItem('voiceflow_auto_float', 'true');
