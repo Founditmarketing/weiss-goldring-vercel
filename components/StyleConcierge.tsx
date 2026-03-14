@@ -348,12 +348,12 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
-      const shouldFloat = sessionStorage.getItem('voiceflow_auto_float') === 'true';
+      const shouldFloat = localStorage.getItem('voiceflow_auto_float') === 'true';
       
       if (urlParams.get('highlight') === 'true' || shouldFloat) {
         if (shouldFloat) {
           setIsFloating(true);    // Instantly queue transition to bubble mode
-          sessionStorage.removeItem('voiceflow_auto_float'); // Clear flag
+          localStorage.removeItem('voiceflow_auto_float'); // Clear flag
         }
         
         const timer = setTimeout(() => {
@@ -490,6 +490,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       // Handle programmatic UI redirects returned from Voiceflow
       if (response.redirectUrl) {
          if (response.redirectUrl.startsWith('http')) {
+             localStorage.setItem('voiceflow_auto_float', 'true');
              window.location.href = response.redirectUrl;
          } else {
              // It's a relative path, map it to the onNavigate prop string
@@ -529,7 +530,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 const cleanRedirect = response.redirectUrl.replace('?highlight=true', '').replace('&highlight=true', '');
                 
                 // Set the floating flag before navigating so the widget shrinks
-                sessionStorage.setItem('voiceflow_auto_float', 'true');
+                localStorage.setItem('voiceflow_auto_float', 'true');
                 setIsFloating(true);
                 
                 onNavigate(pageTarget);
@@ -588,6 +589,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       // Handle programmatic UI redirects returned from Voiceflow
       if (response.redirectUrl) {
          if (response.redirectUrl.startsWith('http')) {
+             localStorage.setItem('voiceflow_auto_float', 'true');
              window.location.href = response.redirectUrl;
          } else {
              // It's a relative path, map it to the onNavigate prop string
@@ -627,7 +629,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                 const cleanRedirect = response.redirectUrl.replace('?highlight=true', '').replace('&highlight=true', '');
                 
                 // Set the floating flag before navigating so the widget shrinks
-                sessionStorage.setItem('voiceflow_auto_float', 'true');
+                localStorage.setItem('voiceflow_auto_float', 'true');
                 setIsFloating(true);
                 
                 onNavigate(pageTarget);
@@ -642,6 +644,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                    }, 100);
                 }
              } else {
+                localStorage.setItem('voiceflow_auto_float', 'true');
                 window.location.href = response.redirectUrl;
              }
          }
@@ -999,12 +1002,14 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                                           setIsFloating(true);
                                                           onNavigate(p);
                                                       } else {
+                                                          localStorage.setItem('voiceflow_auto_float', 'true');
                                                           window.location.href = url;
                                                       }
                                                   } else {
                                                       window.open(url, '_blank');
                                                   }
                                               } else {
+                                                  localStorage.setItem('voiceflow_auto_float', 'true');
                                                   window.location.href = url;
                                               }
                                             } else {
