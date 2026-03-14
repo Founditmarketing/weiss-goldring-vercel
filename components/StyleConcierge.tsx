@@ -289,7 +289,7 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
   const [isFloating, setIsFloating] = useState(false);
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('voiceflow_chat_history');
+      const stored = localStorage.getItem('voiceflow_chat_history');
       if (stored) {
         try { return JSON.parse(stored); } catch (e) { console.error("Failed to parse chat history", e); }
       }
@@ -300,10 +300,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
   const [isTyping, setIsTyping] = useState(false);
   const [sessionKey, setSessionKey] = useState(() => {
     if (typeof window !== 'undefined') {
-      const storedKey = sessionStorage.getItem('voiceflow_userID');
+      const storedKey = localStorage.getItem('voiceflow_userID');
       if (storedKey) return storedKey;
       const newKey = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      sessionStorage.setItem('voiceflow_userID', newKey);
+      localStorage.setItem('voiceflow_userID', newKey);
       return newKey;
     }
     return '';
@@ -396,10 +396,10 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
     }
   }, [isOpen, messages.length, sessionKey]);
 
-  // Sync messages to session storage whenever they change
+  // Sync messages to local storage whenever they change
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      sessionStorage.setItem('voiceflow_chat_history', JSON.stringify(messages));
+      localStorage.setItem('voiceflow_chat_history', JSON.stringify(messages));
     }
   }, [messages]);
 
