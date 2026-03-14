@@ -984,8 +984,8 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                                             if (url) {
                                               // External or relative redirect handled manually here since Voiceflow buttons might contain absolute URLs
                                               if (url.startsWith('http')) {
-                                                  // Quick check if it's the Vercel app domain to handle internally
-                                                  if (url.includes('weiss-goldring-vercel.vercel.app')) {
+                                                  // Quick check if it's the Vercel app domain or custom domain to handle internally
+                                                  if (url.includes('weiss-goldring-vercel.vercel.app') || url.includes('weissgoldring.com')) {
                                                       const path = new URL(url).pathname;
                                                       if (onNavigate) {
                                                           // Map to valid route
