@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weiss & Goldring | Est. 1899</title>
+
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://weissgoldring.com/" />
+  <meta property="og:title" content="Weiss & Goldring | Est. 1899" />
+  <meta property="og:description"
+    content="Serving Alexandria’s gentlemen for over a century with fine tailoring and personal attention." />
+  <meta property="og:image" content="https://weissgoldring.com/bowtieheader.jpg" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://weissgoldring.com/" />
+  <meta property="twitter:title" content="Weiss & Goldring | Est. 1899" />
+  <meta property="twitter:description"
+    content="Serving Alexandria’s gentlemen for over a century with fine tailoring and personal attention." />
+  <meta property="twitter:image" content="https://weissgoldring.com/bowtieheader.jpg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&family=Comfortaa:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Quicksand:wght@300..700&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              100: '#F9F1D8',
+              300: '#D4AF37',
+              500: '#AA8C2C',
+              900: '#5C4B13',
+            },
+            navy: {
+              800: '#0A1929',
+              900: '#050E17',
+              midnight: '#1A242F',
+            },
+            charcoal: '#2C2C2C',
+            metallicGold: '#D4AF37',
+            cream: '#FDFBF7'
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Montserrat"', 'sans-serif'],
+            comfortaa: ['"Comfortaa"', 'cursive'],
+            playfair: ['"Playfair Display"', 'serif'],
+            quicksand: ['"Quicksand"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FDFBF7;
+      color: #0A1929;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/index.css">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
