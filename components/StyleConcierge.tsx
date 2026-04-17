@@ -25,6 +25,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   isCalendarPicker?: boolean;
+  isCalendlyInline?: boolean;
   calendarSubmitted?: boolean;
   buttons?: { name: string, payload: any }[];
   carousel?: CarouselCard[];
@@ -33,6 +34,7 @@ interface Message {
 interface ConsultationResponse {
   text: string;
   hasCalendarPicker: boolean;
+  hasCalendlyInline?: boolean;
   buttons?: { name: string, payload: any }[];
   carousel?: CarouselCard[];
   redirectUrl?: string;
@@ -82,6 +84,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
     // Parse the traces to find text responses and custom actions (redirects, calendar picker, buttons)
     let assistantText = "";
     let hasCalendarPicker = false;
+    let hasCalendlyInline = false;
     let buttons: { name: string, payload: any }[] = [];
     let carouselCards: CarouselCard[] = [];
     let redirectUrl: string | undefined = undefined;
@@ -128,10 +131,8 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
         trace.payload?.name === 'open_calendly';
 
       if (isOpenCalendly) {
-        console.log("Voiceflow requested Calendly popup");
-        if (typeof window !== 'undefined' && (window as any).Calendly) {
-            (window as any).Calendly.initPopupWidget({ url: 'https://calendly.com/kylan-founditmarketing/private-fitting?month=2026-04' });
-        }
+        console.log("Voiceflow requested inline Calendly embed");
+        hasCalendlyInline = true;
       }
 
       // Check for Custom Action: calendar_picker
@@ -293,7 +294,7 @@ const handleConsultationRequest = async (message: string, userKey: string, type:
       }
     }
 
-    return { text: assistantText.trim(), hasCalendarPicker, buttons: buttons.length > 0 ? buttons : undefined, carousel: carouselCards.length > 0 ? carouselCards : undefined, redirectUrl }; // We return empty string if there's ONLY a redirect trace
+    return { text: assistantText.trim(), hasCalendarPicker, hasCalendlyInline, buttons: buttons.length > 0 ? buttons : undefined, carousel: carouselCards.length > 0 ? carouselCards : undefined, redirectUrl }; // We return empty string if there's ONLY a redirect trace
   } catch (error) {
     console.error("Chat UI Fetch Error:", error);
     return { 
@@ -390,12 +391,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
         setIsTyping(true);
         try {
           const response = await handleConsultationRequest('', sessionKey, 'launch', window.location.pathname);
-          if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
+          if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.hasCalendlyInline || response.buttons)) {
             setMessages([{
               id: Date.now().toString(),
               role: 'assistant',
               content: response.text,
               isCalendarPicker: response.hasCalendarPicker,
+              isCalendlyInline: response.hasCalendlyInline,
               buttons: response.buttons
             }]);
           }
@@ -587,12 +589,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
       }
 
       // Only add a chat bubble if Voiceflow returned actual text, buttons, or a calendar picker
-      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.hasCalendlyInline || response.buttons)) {
         const assistantMsg: Message = { 
           id: (Date.now() + 1).toString(), 
           role: 'assistant', 
           content: response.text,
           isCalendarPicker: response.hasCalendarPicker,
+          isCalendlyInline: response.hasCalendlyInline,
           buttons: response.buttons
         };
         setMessages(prev => [assistantMsg, ...prev]);
@@ -702,12 +705,13 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
          }
       }
 
-      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.buttons)) {
+      if (response && (response.text.trim() !== '' || response.hasCalendarPicker || response.hasCalendlyInline || response.buttons)) {
         const assistantMsg: Message = { 
           id: (Date.now() + 1).toString(), 
           role: 'assistant', 
           content: response.text,
           isCalendarPicker: response.hasCalendarPicker,
+          isCalendlyInline: response.hasCalendlyInline,
           buttons: response.buttons
         };
         setMessages(prev => [assistantMsg, ...prev]);
@@ -990,6 +994,16 @@ export const StyleConcierge = ({ isHomePage = true, onNavigate }: { isHomePage?:
                             : msg.content
                           }
                         </div>
+                        {msg.role === 'assistant' && msg.isCalendlyInline && (
+                          <div className="mt-4 w-full h-[600px] rounded-xl overflow-hidden border border-gold-300/20">
+                            <iframe 
+                              src="https://calendly.com/kylan-founditmarketing/private-fitting?month=2026-04" 
+                              width="100%" 
+                              height="100%" 
+                              frameBorder="0"
+                            ></iframe>
+                          </div>
+                        )}
                         {msg.role === 'assistant' && msg.buttons && msg.buttons.length > 0 && (
                           <div className="mt-4 flex flex-wrap gap-2">
                             {msg.buttons.map((btn, bIdx) => {
